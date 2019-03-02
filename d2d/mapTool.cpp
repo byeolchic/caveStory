@@ -604,7 +604,7 @@ void mapTool::decreaseX()
 	{
 		tagTile* newTile = new tagTile;
 
-		newTile->tileImgIndex = NULL;
+		newTile->tileImgIndex = 1;
 		newTile->terrainFrameX = NULL;
 		newTile->terrainFrameY = NULL;
 		newTile->objectFrameX = NULL;
@@ -625,7 +625,7 @@ void mapTool::decreaseY()
 	for (int i = 0; i < TILEX; ++i)
 	{
 		tagTile* newTile = new tagTile;
-		newTile->tileImgIndex = NULL;
+		newTile->tileImgIndex = 1;
 		newTile->terrainFrameX = NULL;
 		newTile->terrainFrameY = NULL;
 		newTile->objectFrameX = NULL;
