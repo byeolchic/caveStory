@@ -30,7 +30,6 @@ HRESULT mapTool::init()
 	_objButton = new button;
 	_objButton->init("objectButton", WINSIZEX - 280, 490, PointMake(0, 1), PointMake(0, 0), _selectObj);
 
-
 	//맵 x축, y축 버튼
 	IMAGEMANAGER->addFrameImage("X축", L"image/buttonImg/X축.png", 60, 120, 1, 2);
 	IMAGEMANAGER->addFrameImage("Y축", L"image/buttonImg/Y축.png", 60, 120, 1, 2);
@@ -113,9 +112,9 @@ HRESULT mapTool::init()
 	IMAGEMANAGER->addFrameImage("map2", L"image/buttonImg/Y축.png", 60, 120, 1, 2);
 	IMAGEMANAGER->addFrameImage("map3", L"image/buttonImg/X축.png", 60, 120, 1, 2);
 	IMAGEMANAGER->addFrameImage("map4", L"image/buttonImg/Y축.png", 60, 120, 1, 2);
-
 	//저장버튼
-	IMAGEMANAGER->addFrameImage("saveButton", L"image/buttonImg/Y축.png", 60, 120, 1, 2);
+	IMAGEMANAGER->addFrameImage("saveButton", L"image/buttonImg/X축.png", 60, 120, 1, 2);
+	IMAGEMANAGER->addFrameImage("loadButton", L"image/buttonImg/Y축.png", 60, 120, 1, 2);
 
 	_map1 = std::move(bind(&mapTool::map1, this));
 	_map2 = std::move(bind(&mapTool::map2, this));
@@ -123,19 +122,24 @@ HRESULT mapTool::init()
 	_map4 = std::move(bind(&mapTool::map4, this));
 	//저장 기능을 함수대입 함
 	_save = std::move(bind(&mapTool::save, this));
+	//불러오기 기능을 함수대입 함
+	_load = std::move(bind(&mapTool::load, this));
 
 	_mapOne = new button;
-	_mapOne->init("map1", 50, 770, PointMake(0, 1), PointMake(0, 0), _map1);
+	_mapOne->init("map1", 50, 750, PointMake(0, 1), PointMake(0, 0), _map1);
 	_mapTwo = new button;
-	_mapTwo->init("map2", 100, 770, PointMake(0, 1), PointMake(0, 0), _map2);
+	_mapTwo->init("map2", 100, 750, PointMake(0, 1), PointMake(0, 0), _map2);
 	_mapThree = new button;
-	_mapThree->init("map3", 150, 770, PointMake(0, 1), PointMake(0, 0), _map3);
+	_mapThree->init("map3", 150, 750, PointMake(0, 1), PointMake(0, 0), _map3);
 	_mapFour = new button;
-	_mapFour->init("map4", 200, 770, PointMake(0, 1), PointMake(0, 0), _map4);
+	_mapFour->init("map4", 200, 750, PointMake(0, 1), PointMake(0, 0), _map4);
 
 	//저장 버튼( 이 버튼을 눌러야 해당 케이스에 정보가 저장이 됨)
 	_saveButton = new button;
 	_saveButton->init("saveButton", 400, 770, PointMake(0, 1), PointMake(0, 0), _save);
+	//불러오기 버튼
+	_loadButton = new button;
+	_loadButton->init("loadButton", 400, 800, PointMake(0, 1), PointMake(0, 0), _load);
 
 	return S_OK;
 }
@@ -154,11 +158,12 @@ void mapTool::update()
 	_decreaseButton->update(WINSIZEX - 150, 665);
 	_objButton->update(WINSIZEX - 250, 490);
 
-	_mapOne->update(50, 770);
-	_mapTwo->update(100, 770);
-	_mapThree->update(150, 770);
-	_mapFour->update(200, 770);
-	_saveButton->update(400, 770);
+	_mapOne->update(50, 750);
+	_mapTwo->update(100, 750);
+	_mapThree->update(150, 750);
+	_mapFour->update(200, 750);
+	_saveButton->update(400, 750);
+	_loadButton->update(400, 800);
 
 
 	//각도 계산하는 함수
@@ -198,7 +203,8 @@ void mapTool::render()
 	_mapFour->render();
 	//저장버튼
 	_saveButton->render();
-
+	//불러오기버튼
+	_loadButton->render();
 	//맵을 클릭한곳에 sample 타일을 그리는부분
 	for (int i = 0; i < TILEY; ++i)
 	{
@@ -392,6 +398,19 @@ void mapTool::cbSelectY()
 void mapTool::map1()
 {
 	_mapType = MAP_TYPE_ONE;
+	for (int i = TILEY - 1; i >= 0; i--)
+	{
+		for (int j = TILEX - 1; j >= 0; j--)
+		{
+			if (_vvTile[i][j])
+			{
+				SAFE_DELETE(_vvTile[i][j]);
+				_vvTile[i].pop_back();
+			}
+		}
+		_vvTile.pop_back();
+	}
+	mapToolSetting();
 	//비어있으면 비어있는거 가져오고
 	//저장된거 있으면 저장된거 가져오자
 	//load();		//매개변수로 현재 타일 개수 받아올까..
@@ -400,16 +419,56 @@ void mapTool::map1()
 void mapTool::map2()
 {
 	_mapType = MAP_TYPE_TWO;
+	for (int i = TILEY - 1; i >= 0; i--)
+	{
+		for (int j = TILEX - 1; j >= 0; j--)
+		{
+			if (_vvTile[i][j])
+			{
+				SAFE_DELETE(_vvTile[i][j]);
+				_vvTile[i].pop_back();
+			}
+		}
+		_vvTile.pop_back();
+	}
+	mapToolSetting();
+	
 }
 
 void mapTool::map3()
 {
 	_mapType = MAP_TYPE_THREE;
+	for (int i = TILEY - 1; i >= 0; i--)
+	{
+		for (int j = TILEX - 1; j >= 0; j--)
+		{
+			if (_vvTile[i][j])
+			{
+				SAFE_DELETE(_vvTile[i][j]);
+				_vvTile[i].pop_back();
+			}
+		}
+		_vvTile.pop_back();
+	}
+	mapToolSetting();
 }
 
 void mapTool::map4()
 {
 	_mapType = MAP_TYPE_FOUR;
+	for (int i = TILEY - 1; i >= 0; i--)
+	{
+		for (int j = TILEX - 1; j >= 0; j--)
+		{
+			if (_vvTile[i][j])
+			{
+				SAFE_DELETE(_vvTile[i][j]);
+				_vvTile[i].pop_back();
+			}
+		}
+		_vvTile.pop_back();
+	}
+	mapToolSetting();
 }
 
 //처음에 생성한 맵의 빈 타일 초기화
@@ -710,13 +769,190 @@ void mapTool::drawMap()
 
 void mapTool::save()
 {
+	{
+		HANDLE file;
+		DWORD write;
 
+		char mapSize[128];
+		sprintf_s(mapSize, "%d, %d", TILEX, TILEY);
+		file = CreateFile(_mapSizeNames[(MAP_TYPE)_mapType].c_str(), GENERIC_WRITE, NULL, NULL, CREATE_ALWAYS, FILE_ATTRIBUTE_NORMAL, NULL);
 
+		WriteFile(file, mapSize, strlen(mapSize), &write, NULL);
 
+		CloseHandle(file);
+
+		tagTile* tile = new tagTile[TILEX * TILEY];
+		/*
+		for (int i = 0; i < TILEY; ++i)
+		{
+			for (int j = 0; j < TILEX; ++j)
+			{
+				tile[j + i * TILEX] = *_vvTile[i][j];
+
+				//마을맵의 포탈 정보 입력
+				if (mapCase == 1)		//마을의 포탈
+				{
+					//필드로 가는 포탈
+					_vvTile[8][7]->attr |= ATTR_POTAL;
+					_vvTile[9][7]->attr |= ATTR_POTAL;
+					_vvTile[10][7]->attr |= ATTR_POTAL;
+
+					//집으로 가는 포탈
+					_vvTile[15][23]->attr |= ATTR_POTAL;
+
+					//오박사 실험실 포탈
+					_vvTile[16][36]->attr |= ATTR_POTAL;
+
+					//상점으로 이동하는 포탈
+					_vvTile[26][38]->attr |= ATTR_POTAL;
+
+					//센터로 이동하는 포탈
+					_vvTile[26][33]->attr |= ATTR_POTAL;
+
+					//체육관으로 이동하는 포탈
+					_vvTile[26][26]->attr |= ATTR_POTAL;
+
+				}
+				//플레이어 집의 포탈 정보 입력
+				if (mapCase == 2)
+				{
+					//마을로 이동하는 포탈
+					_vvTile[15][15]->attr |= ATTR_POTAL;
+				}
+				//오박사 연구소의 포탈정보 입력
+				if (mapCase == 3)
+				{
+					//마을로 이동하는 포탈
+					_vvTile[21][16]->attr |= ATTR_POTAL;
+				}
+				//상점의 포탈정보 입력
+				if (mapCase == 4)
+				{
+					//마을로 이동하는 포탈
+					_vvTile[14][14]->attr |= ATTR_POTAL;
+				}
+				//포켓몬센터의 포탈정보 입력
+				if (mapCase == 5)
+				{
+					//마을로 이동하는 포탈 
+					_vvTile[15][17]->attr |= ATTR_POTAL;
+				}
+				//체육관의 포탈정보 입력
+				if (mapCase == 6)
+				{
+					//마을로 이동하는 포탈
+					_vvTile[21][16]->attr |= ATTR_POTAL;
+				}
+				//필드의 포탈정보 입력
+				if (mapCase == 7)
+				{
+					//마을로 이동하는 포탈
+					_vvTile[42][47]->attr |= ATTR_POTAL;
+					_vvTile[42][48]->attr |= ATTR_POTAL;
+					_vvTile[42][49]->attr |= ATTR_POTAL;
+					_vvTile[42][50]->attr |= ATTR_POTAL;
+					//동굴로 이동하는 포탈
+					_vvTile[15][52]->attr |= ATTR_POTAL;
+				}
+				//동굴의 포탈정보 입력
+				if (mapCase == 8)
+				{
+					//필드로 가는 포탈
+					_vvTile[40][31]->attr |= ATTR_POTAL;
+				}
+			}
+		}
+		*/
+		HANDLE file2;
+		DWORD write2;
+		file2 = CreateFile(_mapDataNames[(MAP_TYPE)_mapType].c_str(), GENERIC_WRITE, NULL, NULL, CREATE_ALWAYS, FILE_ATTRIBUTE_NORMAL, NULL);
+
+		WriteFile(file2, tile, sizeof(tagTile) * TILEX * TILEY, &write2, NULL);
+
+		CloseHandle(file2);
+
+		delete[] tile;
+	}
 }
 
 void mapTool::load()
 {
+	for (int i = TILEY - 1; i >= 0; i--)
+	{
+		for (int j = TILEX - 1; j >= 0; j--)
+		{
+			if (_vvTile[i][j])
+			{
+				SAFE_DELETE(_vvTile[i][j]);
+				_vvTile[i].pop_back();
+			}
+		}
+		_vvTile.pop_back();
+	}
+
+	_vvTile.clear();
+
+	HANDLE file;
+	DWORD read;
+	char mapSize[128] = { 0, };
+
+	file = CreateFile(_mapSizeNames[(MAP_TYPE)_mapType].c_str(), GENERIC_READ, NULL, NULL, OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, NULL);
+	ReadFile(file, mapSize, 128, &read, NULL);
+	CloseHandle(file);
+
+	string mapX, mapY;
+	mapX.clear();
+	mapY.clear();
+	bool x = true;
+	for (int i = 0; i < strlen(mapSize); ++i)
+	{
+		if (mapSize[i] == ',')
+		{
+			x = false;
+			continue;
+		}
+		if (mapSize[i] == NULL)
+			break;
+		if (x)
+		{
+			mapX += mapSize[i];
+		}
+		else
+		{
+			mapY += mapSize[i];
+		}
+	}
+
+	TILEX = stoi(mapX);
+	TILEY = stoi(mapY);
+	_vvTile.resize(TILEY);
+
+	for (int i = 0; i < TILEY; ++i)
+	{
+		_vvTile[i].resize(TILEX);
+	}
+
+	tagTile* tile = (tagTile*)malloc(sizeof(tagTile) * TILEX * TILEY);
+	ZeroMemory(tile, sizeof(tagTile) * (TILEX * TILEY));
+
+	HANDLE file2;
+	DWORD read2;
+
+	file2 = CreateFile(_mapDataNames[(MAP_TYPE)_mapType].c_str(), GENERIC_READ, NULL, NULL, OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, NULL);
+
+	ReadFile(file2, tile, sizeof(tagTile) * TILEX * TILEY, &read2, NULL);
+
+	CloseHandle(file2);
+
+	for (int i = 0; i < TILEY; ++i)
+	{
+		for (int j = 0; j < TILEX; ++j)
+		{
+			_vvTile[i][j] = new tagTile;
+			_vvTile[i][j]->setTile(tile[j + i * TILEX]);
+		}
+	}
+	delete[] tile;
 }
 
 //속성 세팅하는 함수
@@ -897,6 +1133,25 @@ void mapTool::decreaseMap()
 	{
 		decreaseY();
 	}
+}
+
+void mapTool::fileNameSet()
+{
+	//_mapSizeNames.insert(make_pair(MAP_TYPE_, "data/mapTypeOneMapSize.map"));
+	//_mapDataNames.insert(make_pair(MAP_TYPE_ONE, "data/mapTypeOneMapData.map"));
+
+	_mapSizeNames.insert(make_pair(MAP_TYPE_ONE, "data/mapTypeOneMapSize.map"));
+	_mapDataNames.insert(make_pair(MAP_TYPE_ONE, "data/mapTypeOneMapData.map"));
+
+	_mapSizeNames.insert(make_pair(MAP_TYPE_TWO, "data/mapTypeTwoMapSize.map"));
+	_mapDataNames.insert(make_pair(MAP_TYPE_TWO, "data/mapTypeTwoMapData.map"));
+
+	_mapSizeNames.insert(make_pair(MAP_TYPE_THREE, "data/mapTypeThreeMapSize.map"));
+	_mapDataNames.insert(make_pair(MAP_TYPE_THREE, "data/mapTypeThreeMapData.map"));
+
+	_mapSizeNames.insert(make_pair(MAP_TYPE_FOUR, "data/mapTypeFourMapSize.map"));
+	_mapDataNames.insert(make_pair(MAP_TYPE_FOUR, "data/mapTypeFourMapData.map"));
+
 }
 
 //오브젝트 버튼을 눌렀을 때 콜백 함수에 대입연산 될 함수

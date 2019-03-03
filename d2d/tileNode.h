@@ -101,4 +101,31 @@ public:
 	bool isBackground;		//백그라운드냐
 	bool isObj;				//오브젝트냐?
 	bool isZorder;			//제트오더냐?
+
+	void setTile(tagTile tile)
+	{
+		if (tile.backgroundIndex > 0)
+			backgroundIndex = tile.backgroundIndex;
+		backgroundX = tile.backgroundX;
+		backgroundY = tile.backgroundY;
+		if (tile.tileImgIndex > 0)
+			tileImgIndex = tile.tileImgIndex;
+		terrainFrameX = tile.terrainFrameX;
+		terrainFrameY = tile.terrainFrameY;
+		if (tile.objImgIndex > 0)
+			objImgIndex = tile.objImgIndex;
+		objectFrameX = tile.objectFrameX;
+		objectFrameY = tile.objectFrameY;
+		
+		zOrderFrameX = tile.zOrderFrameX;
+		zOrderFrameY = tile.zOrderFrameY;
+		attr = tile.attr;
+
+		isBackground = tile.isBackground;
+		isObj = tile.isObj;
+		isZorder = tile.isZorder;
+
+	}
+
+
 };

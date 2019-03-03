@@ -66,10 +66,9 @@ private:
 	button*		_mapTwo;
 	button*		_mapThree;
 	button*		_mapFour;
-
 	//저장버튼
 	button*		_saveButton;
-	
+	button*		_loadButton;
 	
 	POINTF						_pt;									//각도 계산하는 용도의 _pt
 	float						_getAngleF;								//계산된 각도 저장하는 변수
@@ -95,6 +94,9 @@ private:
 	UINT						_pickSampleEndPointX;					//sample 범위 선택 할 때 필요한 변수
 	UINT						_pickSampleEndPointY;					//sample 범위 선택 할 때 필요한 변수
 
+	//세이브 로드 할때 사용하는 변수임
+	map<MAP_TYPE, string> _mapSizeNames;
+	map<MAP_TYPE, string> _mapDataNames;
 	
 	
 public:
@@ -118,8 +120,6 @@ public:
 	void pickSample();			//샘플 타일을 선택하는 함수
 	void drawMap();				//선택한 샘플을 맵에 그리는 함수
 	
-	void load();				
-
 	void setAttribute(UINT samplePage, UINT frameX, UINT frameY);
 
 	function<void(void)> _increaseMap;
@@ -143,11 +143,14 @@ public:
 
 	function<void(void)> _save;
 	void save();
-
+	function<void(void)> _load;
+	void load();
 
 
 	void increaseMap();
 	void decreaseMap();
+	
+	void fileNameSet();
 
 
 
