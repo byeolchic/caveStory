@@ -34,6 +34,10 @@ HRESULT button::init(const char * imageName, int x, int y, POINT btnDownFramePoi
 	return S_OK;
 }
 
+
+
+
+
 void button::release()
 {
 }

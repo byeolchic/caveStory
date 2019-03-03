@@ -12,9 +12,6 @@ mapTool::~mapTool()
 
 HRESULT mapTool::init()
 {
-	//=====================================<< 할 일 >>==========================================
-	//	오브젝트 버튼 만들기
-
 	//맵툴 입시 백그라운드
 	IMAGEMANAGER->addImage("maptoolBackground", L"image/tile/mapToolBackground2.png", 1250, 840);
 
@@ -54,9 +51,6 @@ HRESULT mapTool::init()
 	_decreaseButton = new button;
 	_decreaseButton->init("-1Button", WINSIZEX - 150, 665, PointMake(0, 1), PointMake(0, 0), _increaseMap);
 
-
-
-
 	//샘플 이미지
 	_sampleImg[0] = nullptr;
 	_sampleImg[1] = IMAGEMANAGER->addFrameImage(SAMPLETILENAME[SAMPLE_TILE_IMAGEKEY_01], L"image/tile/tile_01.png", 240, 400, 6, 10);
@@ -68,7 +62,6 @@ HRESULT mapTool::init()
 	_sampleImg[7] = IMAGEMANAGER->addFrameImage(SAMPLETILENAME[SAMPLE_TILE_IMAGEKEY_07], L"image/tile/tile_07.png", 240, 400, 6, 10);
 	_sampleImg[8] = IMAGEMANAGER->addFrameImage(SAMPLETILENAME[SAMPLE_TILE_IMAGEKEY_08], L"image/tile/tile_08.png", 240, 400, 6, 10);
 	_sampleImg[9] = IMAGEMANAGER->addFrameImage(SAMPLETILENAME[SAMPLE_TILE_IMAGEKEY_09], L"image/tile/tile_09.png", 240, 400, 6, 10);
-
 
 
 	_samplePage = 1;
@@ -110,6 +103,40 @@ HRESULT mapTool::init()
 
 	_pickSampleStartPointX = _pickSampleStartPointY = 0;
 	_pickSampleEndPointX = _pickSampleEndPointY = 1;
+
+
+	//맵 저장할 때 쓰일 변수들
+	//todo : 나중에 저장하는 버튼, mapt 타입을 선택하는 버튼을 만들고 나서 그 이미지로 바꿀것.
+	_mapType = 0;
+
+	IMAGEMANAGER->addFrameImage("map1", L"image/buttonImg/X축.png", 60, 120, 1, 2);
+	IMAGEMANAGER->addFrameImage("map2", L"image/buttonImg/Y축.png", 60, 120, 1, 2);
+	IMAGEMANAGER->addFrameImage("map3", L"image/buttonImg/X축.png", 60, 120, 1, 2);
+	IMAGEMANAGER->addFrameImage("map4", L"image/buttonImg/Y축.png", 60, 120, 1, 2);
+
+	//저장버튼
+	IMAGEMANAGER->addFrameImage("saveButton", L"image/buttonImg/Y축.png", 60, 120, 1, 2);
+
+	_map1 = std::move(bind(&mapTool::map1, this));
+	_map2 = std::move(bind(&mapTool::map2, this));
+	_map3 = std::move(bind(&mapTool::map3, this));
+	_map4 = std::move(bind(&mapTool::map4, this));
+	//저장 기능을 함수대입 함
+	_save = std::move(bind(&mapTool::save, this));
+
+	_mapOne = new button;
+	_mapOne->init("map1", 50, 770, PointMake(0, 1), PointMake(0, 0), _map1);
+	_mapTwo = new button;
+	_mapTwo->init("map2", 100, 770, PointMake(0, 1), PointMake(0, 0), _map2);
+	_mapThree = new button;
+	_mapThree->init("map3", 150, 770, PointMake(0, 1), PointMake(0, 0), _map3);
+	_mapFour = new button;
+	_mapFour->init("map4", 200, 770, PointMake(0, 1), PointMake(0, 0), _map4);
+
+	//저장 버튼( 이 버튼을 눌러야 해당 케이스에 정보가 저장이 됨)
+	_saveButton = new button;
+	_saveButton->init("saveButton", 400, 770, PointMake(0, 1), PointMake(0, 0), _save);
+
 	return S_OK;
 }
 
@@ -127,12 +154,17 @@ void mapTool::update()
 	_decreaseButton->update(WINSIZEX - 150, 665);
 	_objButton->update(WINSIZEX - 250, 490);
 
+	_mapOne->update(50, 770);
+	_mapTwo->update(100, 770);
+	_mapThree->update(150, 770);
+	_mapFour->update(200, 770);
+	_saveButton->update(400, 770);
+
+
 	//각도 계산하는 함수
 	calculateAngle();
 	pickSample();
 	drawMap();
-
-
 
 	//_reSizeX = TILEX;
 	//_reSizeY = TILEY;
@@ -159,6 +191,13 @@ void mapTool::render()
 	_decreaseButton->render();
 	//오브젝트 버튼
 	_objButton->render();
+	//맵 타입별로 저장하는 버튼 출력
+	_mapOne->render();
+	_mapTwo->render();
+	_mapThree->render();
+	_mapFour->render();
+	//저장버튼
+	_saveButton->render();
 
 	//맵을 클릭한곳에 sample 타일을 그리는부분
 	for (int i = 0; i < TILEY; ++i)
@@ -239,8 +278,8 @@ void mapTool::render()
 		IMAGEMANAGER->findImage(SAMPLETILENAME[_pickSample.tileImgPage])->frameRender(_ptMouse.x + 20, _ptMouse.y + 20, _pickSample.indX, _pickSample.indY, 0.5f);
 	}
 	WCHAR str[128];
-	swprintf_s(str, L"angle : %f", _getAngleF);
-	D2DMANAGER->drawText(str, CAMERA->getPosX(), CAMERA->getPosY() + 500);
+	swprintf_s(str, L"mapType : %d", _mapType);
+	D2DMANAGER->drawText(str, CAMERA->getPosX(), CAMERA->getPosY() + 500, 25);
 	swprintf_s(str, L"select X축 : %d", _isSelectX);
 	D2DMANAGER->drawText(str, CAMERA->getPosX(), CAMERA->getPosY() + 520);
 	swprintf_s(str, L"select Y축 : %d", _isSelectY);
@@ -271,7 +310,11 @@ void mapTool::render()
 	swprintf_s(str, L"isClick: %d", _isClick);
 	D2DMANAGER->drawText(str, CAMERA->getPosX() + 130, CAMERA->getPosY() + 720, 25);
 
+
+
 }
+
+
 //아직 안됨
 //todo
 void mapTool::calculateAngle()
@@ -344,6 +387,29 @@ void mapTool::cbSelectY()
 	{
 		_isSelectY = false;
 	}
+}
+
+void mapTool::map1()
+{
+	_mapType = MAP_TYPE_ONE;
+	//비어있으면 비어있는거 가져오고
+	//저장된거 있으면 저장된거 가져오자
+	//load();		//매개변수로 현재 타일 개수 받아올까..
+}
+
+void mapTool::map2()
+{
+	_mapType = MAP_TYPE_TWO;
+}
+
+void mapTool::map3()
+{
+	_mapType = MAP_TYPE_THREE;
+}
+
+void mapTool::map4()
+{
+	_mapType = MAP_TYPE_FOUR;
 }
 
 //처음에 생성한 맵의 빈 타일 초기화
