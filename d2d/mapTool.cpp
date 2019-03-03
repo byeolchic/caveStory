@@ -21,24 +21,31 @@ HRESULT mapTool::init()
 	//이전, 다음 버튼
 	IMAGEMANAGER->addFrameImage("nextButton", L"image/buttonImg/nextButton.png", 60, 120, 1, 2);
 	IMAGEMANAGER->addFrameImage("preButton", L"image/buttonImg/preButton.png", 60, 120, 1, 2);
-	
+
 	_sampleNextPageButton = new button;
-	_sampleNextPageButton->init("nextButton", WINSIZEX - 90, 490, PointMake(0, 1), PointMake(0, 0), cbChangeNextSample);
+	_sampleNextPageButton->init("nextButton", WINSIZEX - 50, 490, PointMake(0, 1), PointMake(0, 0), cbChangeNextSample);
 	_samplePrePageButton = new button;
-	_samplePrePageButton->init("preButton", WINSIZEX - 190, 490, PointMake(0, 1), PointMake(0, 0), cbChangePreSample);
-	
+	_samplePrePageButton->init("preButton", WINSIZEX - 150, 490, PointMake(0, 1), PointMake(0, 0), cbChangePreSample);
+
+	//오브젝트 버튼
+	IMAGEMANAGER->addFrameImage("objectButton", L"image/buttonImg/objectButton.png", 100, 120, 1, 2);
+	_selectObj = std::move(bind(&mapTool::selectObj, this));
+	_objButton = new button;
+	_objButton->init("objectButton", WINSIZEX - 280, 490, PointMake(0, 1), PointMake(0, 0), _selectObj);
+
+
 	//맵 x축, y축 버튼
 	IMAGEMANAGER->addFrameImage("X축", L"image/buttonImg/X축.png", 60, 120, 1, 2);
 	IMAGEMANAGER->addFrameImage("Y축", L"image/buttonImg/Y축.png", 60, 120, 1, 2);
 	_selectXButton = new button;
-	_selectXButton->init("X축", WINSIZEX - 200, 550, PointMake(0, 1), PointMake(0, 0),cbSelectX);
+	_selectXButton->init("X축", WINSIZEX - 200, 550, PointMake(0, 1), PointMake(0, 0), cbSelectX);
 	_selectYbutton = new button;
 	_selectYbutton->init("Y축", WINSIZEX - 100, 550, PointMake(0, 1), PointMake(0, 0), cbSelectY);
 
 	//맵 사이즈 증감 버튼
 	IMAGEMANAGER->addFrameImage("+1Button", L"image/buttonImg/+1Button.png", 60, 120, 1, 2);
 	IMAGEMANAGER->addFrameImage("-1Button", L"image/buttonImg/-1Button.png", 60, 120, 1, 2);
-	
+
 	_increaseMap = std::move(bind(&mapTool::increaseMap, this));
 	_decreaseMap = std::move(bind(&mapTool::decreaseMap, this));
 
@@ -47,11 +54,7 @@ HRESULT mapTool::init()
 	_decreaseButton = new button;
 	_decreaseButton->init("-1Button", WINSIZEX - 150, 665, PointMake(0, 1), PointMake(0, 0), _increaseMap);
 
-	//오브젝트 버튼
-	IMAGEMANAGER->addFrameImage("objectButton", L"image/buttonImg/objectButton.png", 100, 120, 1, 2);
-	_selectObj = std::move(bind(&mapTool::selectObj, this));
-	_objButton = new button;
-	_objButton->init("objectButton", WINSIZEX - 300, 490, PointMake(0, 1), PointMake(0, 0), _selectObj);
+
 
 
 	//샘플 이미지
@@ -62,11 +65,11 @@ HRESULT mapTool::init()
 	_sampleImg[4] = IMAGEMANAGER->addFrameImage(SAMPLETILENAME[SAMPLE_TILE_IMAGEKEY_04], L"image/tile/tile_04.png", 240, 400, 6, 10);
 	_sampleImg[5] = IMAGEMANAGER->addFrameImage(SAMPLETILENAME[SAMPLE_TILE_IMAGEKEY_05], L"image/tile/tile_05.png", 240, 400, 6, 10);
 	_sampleImg[6] = IMAGEMANAGER->addFrameImage(SAMPLETILENAME[SAMPLE_TILE_IMAGEKEY_06], L"image/tile/tile_06.png", 240, 400, 6, 10);
-	_sampleImg[7] = IMAGEMANAGER->addFrameImage(SAMPLETILENAME[SAMPLE_TILE_IMAGEKEY_07], L"image/tile/tile_07.png", 224, 210, 6, 10);
-	_sampleImg[8] = IMAGEMANAGER->addFrameImage(SAMPLETILENAME[SAMPLE_TILE_IMAGEKEY_08], L"image/tile/tile_08.png", 224, 210, 6, 10);
-	_sampleImg[9] = IMAGEMANAGER->addFrameImage(SAMPLETILENAME[SAMPLE_TILE_IMAGEKEY_09], L"image/tile/tile_09.png", 224, 210, 6, 10);
+	_sampleImg[7] = IMAGEMANAGER->addFrameImage(SAMPLETILENAME[SAMPLE_TILE_IMAGEKEY_07], L"image/tile/tile_07.png", 240, 400, 6, 10);
+	_sampleImg[8] = IMAGEMANAGER->addFrameImage(SAMPLETILENAME[SAMPLE_TILE_IMAGEKEY_08], L"image/tile/tile_08.png", 240, 400, 6, 10);
+	_sampleImg[9] = IMAGEMANAGER->addFrameImage(SAMPLETILENAME[SAMPLE_TILE_IMAGEKEY_09], L"image/tile/tile_09.png", 240, 400, 6, 10);
 
-	
+
 
 	_samplePage = 1;
 	CAMERA->init(0, 0, 5000, 5000);
@@ -78,6 +81,7 @@ HRESULT mapTool::init()
 
 	_isClick = false;
 
+	//선택한 샘플
 	_pickSample.indX = 0;
 	_pickSample.indY = 0;
 	_pickSample.tileImgPage = 0;
@@ -87,7 +91,7 @@ HRESULT mapTool::init()
 	_loopX = 0.f;
 
 	//맵사이즈 조정에서 X축 증감을 선택했냐? 불값 초기화
-	_isSelectX = _isSelectY= false;
+	_isSelectX = _isSelectY = false;
 	_boolCountX = _boolCountY = 0;
 
 	//타일의 각도 계산할때 필요한 변수들
@@ -98,12 +102,14 @@ HRESULT mapTool::init()
 
 	//타일을 드래그로 범위 지정하여 그릴 때 사용할 변수
 	_isShift = false;
-	
+	//백그라운드 타일을 눌렀냐?
+	_isBackground = false;
 	//오브젝트 버튼을 눌렀냐?
 	_isClickObj = false;
 	_objSelectCount = 0;
 
-
+	_pickSampleStartPointX = _pickSampleStartPointY = 0;
+	_pickSampleEndPointX = _pickSampleEndPointY = 1;
 	return S_OK;
 }
 
@@ -113,19 +119,19 @@ void mapTool::update()
 
 	_loopX += 0.5f;
 	CAMERA->mapToolMove();
-	_sampleNextPageButton->update(WINSIZEX - 90, 490);
-	_samplePrePageButton->update(WINSIZEX - 190, 490);
+	_sampleNextPageButton->update(WINSIZEX - 50, 490);
+	_samplePrePageButton->update(WINSIZEX - 150, 490);
 	_selectXButton->update(WINSIZEX - 200, 550);
 	_selectYbutton->update(WINSIZEX - 100, 550);
 	_increaseButton->update(WINSIZEX - 150, 600);
 	_decreaseButton->update(WINSIZEX - 150, 665);
-	_objButton->update(WINSIZEX - 300, 490);
+	_objButton->update(WINSIZEX - 250, 490);
 
 	//각도 계산하는 함수
 	calculateAngle();
 	pickSample();
 	drawMap();
-	
+
 
 
 	//_reSizeX = TILEX;
@@ -169,25 +175,32 @@ void mapTool::render()
 				continue;
 			if (40 + ((i + 1) * TILE_SIZE) - CAMERA->getPosY() > CAMERA_SHOW_RANGE_H)
 				continue;
-			if (!_isClickObj)
+			//배경인 타일 출력
+			if(_vvTile[i][j]->isBackground)
+				IMAGEMANAGER->findImage(SAMPLETILENAME[_vvTile[i][j]->backgroundIndex])->frameRender(40 + j * TILE_SIZE, 40 + i * TILE_SIZE
+																									 , _vvTile[i][j]->backgroundX
+																									 , _vvTile[i][j]->backgroundY);
+			//일반타일 출력
+			IMAGEMANAGER->findImage(SAMPLETILENAME[_vvTile[i][j]->tileImgIndex])->frameRender(40 + j * TILE_SIZE, 40 + i * TILE_SIZE
+																							  , _vvTile[i][j]->terrainFrameX
+																							  , _vvTile[i][j]->terrainFrameY);
+			//오브젝트 출력
+			if (_vvTile[i][j]->isObj)
 			{
 				IMAGEMANAGER->findImage(SAMPLETILENAME[_vvTile[i][j]->tileImgIndex])->frameRender(40 + j * TILE_SIZE, 40 + i * TILE_SIZE
 																								  , _vvTile[i][j]->terrainFrameX
 																								  , _vvTile[i][j]->terrainFrameY);
+
+
+				IMAGEMANAGER->findImage(SAMPLETILENAME[_vvTile[i][j]->objImgIndex])->frameRender(40 + j * TILE_SIZE, 40 + i * TILE_SIZE
+																								 , _vvTile[i][j]->objectFrameX
+																								 , _vvTile[i][j]->objectFrameY);
 			}
-			else
-			{
-				IMAGEMANAGER->findImage(SAMPLETILENAME[_vvTile[i][j]->tileImgIndex])->frameRender(40 + j * TILE_SIZE, 40 + i * TILE_SIZE
-																								  , _vvTile[i][j]->objectFrameX
-																								  , _vvTile[i][j]->objectFrameY);
-			}
-			IMAGEMANAGER->findImage(SAMPLETILENAME[_vvTile[i][j]->tileImgIndex])->frameRender(40 + j * TILE_SIZE, 40 + i * TILE_SIZE
-																							  , _vvTile[i][j]->objectFrameX
-																							  , _vvTile[i][j]->objectFrameY);
+			//제트오더 출력
 		}
 	}
 
-	//맵 그리는 쪽의 렉트를 그리는 부분
+	//맵 그리는 쪽의 렉트를 그림
 	for (int i = 0; i < TILEY; ++i)
 	{
 		for (int j = 0; j < TILEX; j++)
@@ -204,26 +217,23 @@ void mapTool::render()
 				continue;
 
 			D2DMANAGER->drawRectangle(40 + j * TILE_SIZE, 40 + (i * TILE_SIZE),
-				40 + (j + 1) * TILE_SIZE, 40 + ((i + 1) * TILE_SIZE));
+									  40 + (j + 1) * TILE_SIZE, 40 + ((i + 1) * TILE_SIZE));
 		}
 	}
 
-
-	//샘플 타일 출력
+	//샘플 타일 이미지 출력
 	IMAGEMANAGER->findImage(SAMPLETILENAME[_samplePage])->render(CAMERA->getPosX() + WINSIZEX - 280, CAMERA->getPosY() + SAMPLE_DISTANCE_Y);
-	
+
 	//샘플쪽 rect 출력
-	if ((_samplePage < 6 ))
+	for (int i = 0; i < SAMPLE_HEIGHT_NUM; ++i)
 	{
-		for (int i = 0; i < SAMPLE_HEIGHT_NUM; ++i)
+		for (int j = 0; j < SAMPLE_WIDTH_NUM; j++)
 		{
-			for (int j = 0; j < SAMPLE_WIDTH_NUM; j++)
-			{
-				D2DMANAGER->drawRectangle(CAMERA->getPosX() + (WINSIZEX - 280) + (j * TILE_SIZE), CAMERA->getPosY() + SAMPLE_DISTANCE_Y + (i * TILE_SIZE),
-					CAMERA->getPosX() + (WINSIZEX - 280) + ((j + 1) * TILE_SIZE), CAMERA->getPosY() + SAMPLE_DISTANCE_Y + ((i + 1) * TILE_SIZE));
-			}
+			D2DMANAGER->drawRectangle(CAMERA->getPosX() + (WINSIZEX - 280) + (j * TILE_SIZE), CAMERA->getPosY() + SAMPLE_DISTANCE_Y + (i * TILE_SIZE),
+									  CAMERA->getPosX() + (WINSIZEX - 280) + ((j + 1) * TILE_SIZE), CAMERA->getPosY() + SAMPLE_DISTANCE_Y + ((i + 1) * TILE_SIZE));
 		}
 	}
+	
 	if (_isClick)
 	{
 		IMAGEMANAGER->findImage(SAMPLETILENAME[_pickSample.tileImgPage])->frameRender(_ptMouse.x + 20, _ptMouse.y + 20, _pickSample.indX, _pickSample.indY, 0.5f);
@@ -245,9 +255,21 @@ void mapTool::render()
 	D2DMANAGER->drawText(str, CAMERA->getPosX(), CAMERA->getPosY() + 620, 30);
 	swprintf_s(str, L"resizeY : %d", _reSizeY);
 	D2DMANAGER->drawText(str, CAMERA->getPosX(), CAMERA->getPosY() + 650, 30);
-	
+
 	swprintf_s(str, L"오브젝트냐: %d", _isClickObj);
 	D2DMANAGER->drawText(str, CAMERA->getPosX(), CAMERA->getPosY() + 680, 30);
+
+	swprintf_s(str, L"saveStartPtX: %d", _pickSampleStartPointX);
+	D2DMANAGER->drawText(str, CAMERA->getPosX() + 130, CAMERA->getPosY() + 600, 25);
+	swprintf_s(str, L"saveStartPtY: %d", _pickSampleStartPointY);
+	D2DMANAGER->drawText(str, CAMERA->getPosX() + 130, CAMERA->getPosY() + 630, 25);
+	swprintf_s(str, L"saveEndPtX: %d", _pickSampleEndPointX);
+	D2DMANAGER->drawText(str, CAMERA->getPosX() + 130, CAMERA->getPosY() + 660, 25);
+	swprintf_s(str, L"saveEndPtY: %d", _pickSampleEndPointY);
+	D2DMANAGER->drawText(str, CAMERA->getPosX() + 130, CAMERA->getPosY() + 690, 25);
+
+	swprintf_s(str, L"isClick: %d", _isClick);
+	D2DMANAGER->drawText(str, CAMERA->getPosX() + 130, CAMERA->getPosY() + 720, 25);
 
 }
 //아직 안됨
@@ -265,7 +287,7 @@ void mapTool::calculateAngle()
 			}
 			if (_calculateNum % 2 == 1)
 			{
-				
+
 				_getAngleF = getAngle(_pt.x, _pt.y, _ptMouse.x, _ptMouse.y) * (180 / PI);
 			}
 			++_calculateNum;
@@ -282,6 +304,7 @@ void mapTool::cbChangeNextSample()
 		_samplePage = 1;
 	}
 	_isClick = false;
+	_isBackground = false;
 }
 //샘플타일 이전 페이지로 넘기는 콜백함수
 void mapTool::cbChangePreSample()
@@ -292,6 +315,8 @@ void mapTool::cbChangePreSample()
 		_samplePage = SAMPLE_TILE_IMAGEKEY_COUNT - 1;
 	}
 	_isClick = false;
+	_isBackground = false;
+
 }
 
 //X축 선택
@@ -321,6 +346,7 @@ void mapTool::cbSelectY()
 	}
 }
 
+//처음에 생성한 맵의 빈 타일 초기화
 void mapTool::mapToolSetting()
 {
 	for (int i = 0; i < MAP_HEIGHT_NUM; ++i)
@@ -329,15 +355,22 @@ void mapTool::mapToolSetting()
 		for (int j = 0; j < MAP_WIDTH_NUM; ++j)
 		{
 			tagTile* tile = new tagTile;
+			tile->backgroundIndex = 7;
+			tile->backgroundX = NULL;
+			tile->backgroundY = NULL;
 
 			tile->tileImgIndex = 1;
 			tile->terrainFrameX = NULL;
 			tile->terrainFrameY = NULL;
+			
+			tile->objImgIndex = 1;
 			tile->objectFrameX = NULL;
 			tile->objectFrameY = NULL;
-			tile->zOrderFrameX = NULL;	
-			tile->zOrderFrameY = NULL;	
+
+			tile->zOrderFrameX = NULL;
+			tile->zOrderFrameY = NULL;
 			tile->attr = TS_NONE;
+			tile->isBackground = false;
 			tile->isObj = false;
 			tile->isZorder = false;
 
@@ -347,6 +380,7 @@ void mapTool::mapToolSetting()
 	}
 }
 
+//샘플 선택하는 함수
 void mapTool::pickSample()
 {
 	if (_ptMouse.x - CAMERA->getPosX() < SAMPLE_START_POSX)
@@ -355,16 +389,17 @@ void mapTool::pickSample()
 		return;
 	if (_ptMouse.x - CAMERA->getPosX() > SAMPLE_START_POSX + (SAMPLE_WIDTH_NUM * TILE_SIZE))
 		return;
-	if(_ptMouse.y - CAMERA->getPosY() > SAMPLE_DISTANCE_Y + (SAMPLE_HEIGHT_NUM * TILE_SIZE))
-	   return;
+	if (_ptMouse.y - CAMERA->getPosY() > SAMPLE_DISTANCE_Y + (SAMPLE_HEIGHT_NUM * TILE_SIZE))
+		return;
 
 	int frameX = (_ptMouse.x - CAMERA->getPosX() - SAMPLE_START_POSX) / TILE_SIZE;
 	int frameY = (_ptMouse.y - CAMERA->getPosY() - SAMPLE_DISTANCE_Y) / TILE_SIZE;
 
-	int backX = (_ptMouse.x - CAMERA->getPosX() - SAMPLE_START_POSX) / 224;			//백그라운드는 사이즈가 달라서 변수 따로 만들었어여
-	int backY = (_ptMouse.y - CAMERA->getPosY() - SAMPLE_DISTANCE_Y) / 210;						//frame은 없는 이미지에여
 	if (KEYMANAGER->isOnceKeyDown(VK_LBUTTON))
 	{
+		_isClick = true;
+		_pickSampleStartPointX = frameX;
+		_pickSampleStartPointY = frameY;
 		switch (_samplePage)
 		{
 		case 1:
@@ -374,10 +409,11 @@ void mapTool::pickSample()
 			{
 				// 클릭하여 선택한 샘플을 저장하는 변수에 넣어줌
 				_pickSample.tileImgPage = SAMPLE_TILE_IMAGEKEY_01;
-				_pickSample.indX = frameX;			
+				_pickSample.indX = frameX;
 				_pickSample.indY = frameY;
-			}
-			break;
+				_pickSampleStartPointX = frameX;
+				_pickSampleStartPointY = frameY;
+				break;
 
 		case 2:case 3:case 4:
 			if ((frameX >= 0 && frameX < SAMPLE_WIDTH_NUM) && (frameY >= 0 && frameY < SAMPLE_HEIGHT_NUM))
@@ -388,8 +424,11 @@ void mapTool::pickSample()
 					_pickSample.tileImgPage = SAMPLE_TILE_IMAGEKEY_03;
 				else if (_samplePage == 4)
 					_pickSample.tileImgPage = SAMPLE_TILE_IMAGEKEY_04;
+
 				_pickSample.indX = frameX;
 				_pickSample.indY = frameY;
+				_pickSampleStartPointX = frameX;
+				_pickSampleStartPointY = frameY;
 			}
 			break;
 
@@ -398,40 +437,64 @@ void mapTool::pickSample()
 				((frameX >= 0 && frameX < SAMPLE_WIDTH_NUM) && ((frameY >= 1 && frameY < 4) || (frameY >= 6 && frameY < SAMPLE_HEIGHT_NUM))))
 			{
 				_pickSample.tileImgPage = SAMPLE_TILE_IMAGEKEY_05;
+
 				_pickSample.indX = frameX;
 				_pickSample.indY = frameY;
+				_pickSampleStartPointX = frameX;
+				_pickSampleStartPointY = frameY;
 			}
 			break;
 
 		case 6:
-			if ((frameX == 0 || frameX == 1) && (frameY >= 0 && frameY <= 4))
+			if ((frameX >= 0 && frameX < 4) && (frameY >= 0 && frameY < 3) ||
+				(frameX >= 0 && frameX < 3) && (frameY == 3 || frameY == 4))
 			{
 				_pickSample.tileImgPage = SAMPLE_TILE_IMAGEKEY_06;
+
 				_pickSample.indX = frameX;
 				_pickSample.indY = frameY;
+			
 			}
 			break;
 
 		case 7: case 8: case 9:
-			if (backX == 0 && backY == 0)
+			//배경타일
+			if ((frameX >= 0 && frameX < 5) && (frameY >= 0 && frameY < 5))
 			{
+				_isBackground = true;
 				if (_samplePage == 7)
 					_pickSample.tileImgPage = SAMPLE_TILE_IMAGEKEY_07;
-				else if (_samplePage == 8)
+				if (_samplePage == 8)
 					_pickSample.tileImgPage = SAMPLE_TILE_IMAGEKEY_08;
-				else if (_samplePage == 9)
+				if (_samplePage == 9)
 					_pickSample.tileImgPage = SAMPLE_TILE_IMAGEKEY_09;
-				_pickSample.indX = backX;
-				_pickSample.indY = backY;
+
+				_pickSample.indX = frameX;
+				_pickSample.indY = frameY;
+				
+				_isBackground = true;
 			}
 
 		default:
 			break;
+			}
+			//_isClick = true;
 		}
-		_isClick = true;
 	}
-}
 
+	if (KEYMANAGER->isOnceKeyUp(VK_LBUTTON))
+	{
+		_pickSampleEndPointX = frameX + 1;
+		if (_pickSampleEndPointX <= _pickSampleStartPointX) _pickSampleEndPointX + 1;
+		_pickSampleEndPointY = frameY + 1;
+		if (_pickSampleEndPointY <= _pickSampleStartPointY) _pickSampleEndPointY + 1;
+	}
+	//if ((_pickSampleEndPointX - _pickSampleStartPointX > 1) || (_pickSampleEndPointY - _pickSampleStartPointY > 1))
+	//	_isDrag = true;
+	//else _isDrag = false;
+
+}
+//맵 그리는 함수
 void mapTool::drawMap()
 {
 	if (_ptMouse.x - CAMERA->getPosX() > SAMPLE_START_POSX) return;
@@ -439,14 +502,14 @@ void mapTool::drawMap()
 	if (_ptMouse.y > (TILEY + 1) * TILE_SIZE) return;
 	if (_ptMouse.x - CAMERA->getPosX() < 40) return;
 	if (_ptMouse.y - CAMERA->getPosY() < 40) return;
-	
+
 	if (KEYMANAGER->isOnceKeyDown(VK_SHIFT))
 		_isShift = true;
 	if (KEYMANAGER->isOnceKeyUp(VK_SHIFT))
 		_isShift = false;
-	
-	////드래그로 그리기
-	////아직 보류
+
+	//드래그로 그리기
+	//아직 보류
 	if (_isShift)
 	{
 		if (KEYMANAGER->isOnceKeyDown(VK_LBUTTON))
@@ -472,30 +535,109 @@ void mapTool::drawMap()
 	{
 		if (KEYMANAGER->isStayKeyDown(VK_LBUTTON))
 		{
-			for (int i = 0; i < TILEY; ++i)
+			if (_isClickObj)
 			{
-				for (int j = 0; j < TILEX; ++j)
+				for (int i = 0; i < TILEY; ++i)
 				{
-					if (_ptMouse.x > (j + 1) * TILE_SIZE && _ptMouse.x < (j + 2) * TILE_SIZE
-						&& _ptMouse.y > (i + 1) * TILE_SIZE && _ptMouse.y < (i + 2) * TILE_SIZE)
+					for (int j = 0; j < TILEX; ++j)
 					{
-						if (!_isClickObj)
+						if (_ptMouse.x > (j + 1) * TILE_SIZE && _ptMouse.x < (j + 2) * TILE_SIZE
+							&& _ptMouse.y >(i + 1) * TILE_SIZE && _ptMouse.y < (i + 2) * TILE_SIZE)
 						{
-							_vvTile[i][j]->tileImgIndex = _pickSample.tileImgPage;
-							_vvTile[i][j]->terrainFrameX = _pickSample.indX;
-							_vvTile[i][j]->terrainFrameY = _pickSample.indY;
-							_vvTile[i][j]->objectFrameX = _pickSample.indX;
-							_vvTile[i][j]->objectFrameY = _pickSample.indY;
-						}
-						else
-						{
-							_vvTile[i][j]->objectFrameX = _pickSample.indX;
-							_vvTile[i][j]->objectFrameY = _pickSample.indY;
+							int drawAreaX = 0;
+							int drawAreaY = 0;
+							for (int ii = _pickSampleStartPointY; ii < _pickSampleEndPointY; ii++, drawAreaY++)
+							{
+								for (int jj = _pickSampleStartPointX; jj < _pickSampleEndPointX; jj++, drawAreaX++)
+								{
+									_vvTile[i + drawAreaY][j + drawAreaX]->objImgIndex = _pickSample.tileImgPage;
+									_vvTile[i + drawAreaY][j + drawAreaX]->objectFrameX = _pickSample.indX + drawAreaX;
+									_vvTile[i + drawAreaY][j + drawAreaX]->objectFrameY = _pickSample.indY + drawAreaY;
+									_vvTile[i + drawAreaY][j + drawAreaX]->isObj = true;
+								}
+								drawAreaX = 0;
+							}
 						}
 					}
 				}
 			}
+			else
+			{
+				for (int i = 0; i < TILEY; ++i)
+				{
+					for (int j = 0; j < TILEX; ++j)
+					{
+						if (_ptMouse.x > (j + 1) * TILE_SIZE && _ptMouse.x < (j + 2) * TILE_SIZE
+							&& _ptMouse.y >(i + 1) * TILE_SIZE && _ptMouse.y < (i + 2) * TILE_SIZE)
+						{
+							int drawAreaX = 0;
+							int drawAreaY = 0;
+							for (int ii = _pickSampleStartPointY; ii < _pickSampleEndPointY; ii++, drawAreaY++)
+							{
+								for (int jj = _pickSampleStartPointX; jj < _pickSampleEndPointX; jj++, drawAreaX++)
+								{
+									_vvTile[i + drawAreaY][j + drawAreaX]->tileImgIndex = _pickSample.tileImgPage;
+									_vvTile[i + drawAreaY][j + drawAreaX]->terrainFrameX = _pickSample.indX + drawAreaX;
+									_vvTile[i + drawAreaY][j + drawAreaX]->terrainFrameY = _pickSample.indY + drawAreaY;
+								}
+								drawAreaX = 0;
+							}
+						}
+					}
+				}
+			}
+			if (_isBackground)
+			{
+				for (int i = 0; i < TILEY; ++i)
+				{
+					for (int j = 0; j < TILEX; ++j)
+					{
+						if (_ptMouse.x > (j + 1) * TILE_SIZE && _ptMouse.x < (j + 2) * TILE_SIZE
+							&& _ptMouse.y >(i + 1) * TILE_SIZE && _ptMouse.y < (i + 2) * TILE_SIZE)
+						{
+							int drawAreaX = 0;
+							int drawAreaY = 0;
+							for (int ii = _pickSampleStartPointY; ii < _pickSampleEndPointY; ii++, drawAreaY++)
+							{
+								for (int jj = _pickSampleStartPointX; jj < _pickSampleEndPointX; jj++, drawAreaX++)
+								{
+									_vvTile[i + drawAreaY][j + drawAreaX]->backgroundIndex = _pickSample.tileImgPage;
+									_vvTile[i + drawAreaY][j + drawAreaX]->backgroundX = _pickSample.indX + drawAreaX;
+									_vvTile[i + drawAreaY][j + drawAreaX]->backgroundY = _pickSample.indY + drawAreaY;
+									_vvTile[i + drawAreaY][j + drawAreaX]->isBackground = true;
+								}
+								drawAreaX = 0;
+							}
+						}
+					}
+				}
+			}
+			//일반 타일
+			//for (int i = 0; i < TILEY; ++i)
+			//{
+			//	for (int j = 0; j < TILEX; ++j)
+			//	{
+			//		if (_ptMouse.x > (j + 1) * TILE_SIZE && _ptMouse.x < (j + 2) * TILE_SIZE
+			//			&& _ptMouse.y >(i + 1) * TILE_SIZE && _ptMouse.y < (i + 2) * TILE_SIZE)
+			//		{
+			//			int drawAreaX = 0;
+			//			int drawAreaY = 0;
+			//			for (int ii = _pickSampleStartPointY; ii < _pickSampleEndPointY; ii++, drawAreaY++)
+			//			{
+			//				for (int jj = _pickSampleStartPointX; jj < _pickSampleEndPointX; jj++, drawAreaX++)
+			//				{
+			//					_vvTile[i + drawAreaY][j + drawAreaX]->tileImgIndex = _pickSample.tileImgPage;
+			//					_vvTile[i + drawAreaY][j + drawAreaX]->terrainFrameX = _pickSample.indX + drawAreaX;
+			//					_vvTile[i + drawAreaY][j + drawAreaX]->terrainFrameY = _pickSample.indY + drawAreaY;
+			//				}
+			//				drawAreaX = 0;
+			//					
+			//			}
+			//		}
+			//	}
+			//}
 		}
+		
 	}
 
 }
@@ -539,7 +681,7 @@ void mapTool::setAttribute(UINT samplePage, UINT frameX, UINT frameY)
 		//벽
 		//제트오더
 
-			break;
+		break;
 	case 1:
 
 		break;
@@ -604,14 +746,23 @@ void mapTool::decreaseX()
 	{
 		tagTile* newTile = new tagTile;
 
+		newTile->backgroundIndex = 7;
+		newTile->backgroundX = NULL;
+		newTile->backgroundY = NULL;
+
 		newTile->tileImgIndex = 1;
 		newTile->terrainFrameX = NULL;
 		newTile->terrainFrameY = NULL;
+		
+		newTile->objImgIndex = 1;
 		newTile->objectFrameX = NULL;
 		newTile->objectFrameY = NULL;
+
 		newTile->zOrderFrameX = NULL;
 		newTile->zOrderFrameY = NULL;
 		newTile->attr = TS_NONE;
+
+		newTile->isBackground = false;
 		newTile->isObj = false;
 		newTile->isZorder = false;
 		_vvTile[i].push_back(newTile);
@@ -625,14 +776,24 @@ void mapTool::decreaseY()
 	for (int i = 0; i < TILEX; ++i)
 	{
 		tagTile* newTile = new tagTile;
+
+		newTile->backgroundIndex = 7;
+		newTile->backgroundX = NULL;
+		newTile->backgroundY = NULL;
+
 		newTile->tileImgIndex = 1;
 		newTile->terrainFrameX = NULL;
 		newTile->terrainFrameY = NULL;
+
+		newTile->objImgIndex = 1;
 		newTile->objectFrameX = NULL;
 		newTile->objectFrameY = NULL;
+
 		newTile->zOrderFrameX = NULL;
 		newTile->zOrderFrameY = NULL;
 		newTile->attr = TS_NONE;
+		
+		newTile->isBackground = false;
 		newTile->isObj = false;
 		newTile->isZorder = false;
 
@@ -646,7 +807,7 @@ void mapTool::decreaseY()
 void mapTool::increaseMap()
 {
 	//X축 선택시
-	if (_isSelectX && TILEX > 2 )
+	if (_isSelectX && TILEX > 2)
 	{
 		increaseX();
 	}

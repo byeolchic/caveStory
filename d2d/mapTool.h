@@ -5,6 +5,8 @@
 #include <functional>
 
 #define TILE_SIZE			40
+#define BACKGROUND_IDX_NUM	5
+#define BACKGROUND_SIZE		(TILE_SIZE	* BACKGROUND_IDX_NUM)
 
 #define MAP_WIDTH_NUM		10
 #define MAP_HEIGHT_NUM		10
@@ -40,6 +42,8 @@ static int			_boolCountY;
 
 static int			_samplePage;
 static bool			_isClick;			//샘플 타일을 클릭했으면
+static bool			_isBackground;		//백그라운드의타일을 선택했을때 필요한 편수
+
 
 struct tagPickSample
 {
@@ -66,13 +70,20 @@ private:
 	UINT						_reSizeY;			//맵 사이즈 조정 후 그 사이즈를 저장할 변수
 
 	tagPickSample				_pickSample;		//선택한 샘플의 인덱스번호를 계산해서 넣어줄 변수
+	//tagPickSample				_pickBackground[5];		//백그라운드를 선택했을 때 저장할 변수(한 타일의 크기가 TILE_SIZE의 5배라서 배열로 함)
+
+
 
 	bool						_isShift;			//shift 키를 누른 상태냐?
 	bool						_isClickObj;		//object 버튼을 눌렀냐?
 	UINT						_objSelectCount;	//오브젝트 활성화 됐는지 체크할 카운트할 변수
 
+	UINT						_pickSampleStartPointX;		//sample 범위 선택 할 때 필요한 변수
+	UINT						_pickSampleStartPointY;		//sample 범위 선택 할 때 필요한 변수
+	UINT						_pickSampleEndPointX;		//sample 범위 선택 할 때 필요한 변수
+	UINT						_pickSampleEndPointY;		//sample 범위 선택 할 때 필요한 변수
 
-
+			
 public:
 	mapTool();
 	~mapTool();

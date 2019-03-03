@@ -47,27 +47,42 @@ static string  SAMPLETILENAME[SAMPLE_TILE_IMAGEKEY_COUNT] = { "none", "tile_01",
 typedef class tagTile
 {
 public:
-	tagTile() : tileImgIndex(1),
+	tagTile() :
+				backgroundIndex(NULL),
+				backgroundX(NULL),
+				backgroundY(NULL),
+
+				tileImgIndex(1),
 				terrainFrameX(NULL),
 				terrainFrameY(NULL),
+
+				objImgIndex(NULL),
 				objectFrameX(NULL),
 				objectFrameY(NULL),
+		
 				zOrderFrameX(NULL),
 				zOrderFrameY(NULL),
 				attr(NULL)
 	{};
 	~tagTile() {};
 public:
+	UINT backgroundIndex;	//백그라운드의 이미지 인덱스
+	UINT backgroundX;		//백그라운드 frameX
+	UINT backgroundY;		//백그라운드 frameY
 
 	UINT tileImgIndex;		//샘플타일의 인덱스까지 같이 저장해야 샘플 페이지를 넘길때 같이 바뀌는 일이 없당
 	UINT terrainFrameX;		//일단 0으로 초기화
 	UINT terrainFrameY;		//일단 0으로 초기화
+	
+	UINT objImgIndex;		//오브젝트의 이미지 인덱스
 	UINT objectFrameX;		//일단 0으로 초기화
 	UINT objectFrameY;		//일단 0으로 초기화
-	UINT zOrderFrameX;		//일단 0으로 초기화
+	
 	UINT zOrderFrameY;		//일단 0으로 초기화
+	UINT zOrderFrameX;		//일단 0으로 초기화
 	DWORD attr;				//일단 0으로 초기화
+
+	bool isBackground;		//백그라운드냐
 	bool isObj;				//오브젝트냐?
 	bool isZorder;			//제트오더냐?
-
 };
