@@ -76,7 +76,7 @@ HRESULT mapTool::init()
 	//선택한 샘플
 	_pickSample.indX = 0;
 	_pickSample.indY = 0;
-	_pickSample.tileImgPage = 0;
+	_pickSample.tileImgPage = 1;
 
 	//루프렌더용
 	_loopRect = { 0, 0, 1120, 840 };
@@ -141,6 +141,7 @@ HRESULT mapTool::init()
 	_loadButton = new button;
 	_loadButton->init("loadButton", 400, 800, PointMake(0, 1), PointMake(0, 0), _load);
 
+	fileNameSet();
 	return S_OK;
 }
 
@@ -296,22 +297,22 @@ void mapTool::render()
 	swprintf_s(str, L"TILEY : %d", TILEY);
 	D2DMANAGER->drawText(str, CAMERA->getPosX(), CAMERA->getPosY() + 590, 30);
 
-	swprintf_s(str, L"resizeX : %d", _reSizeX);
+	swprintf_s(str, L"경사 타일의 각도: %f", _getAngleF);
 	D2DMANAGER->drawText(str, CAMERA->getPosX(), CAMERA->getPosY() + 620, 30);
-	swprintf_s(str, L"resizeY : %d", _reSizeY);
-	D2DMANAGER->drawText(str, CAMERA->getPosX(), CAMERA->getPosY() + 650, 30);
+	/*swprintf_s(str, L"resizeY : %d", _reSizeY);
+	D2DMANAGER->drawText(str, CAMERA->getPosX(), CAMERA->getPosY() + 650, 30);*/
 
 	swprintf_s(str, L"오브젝트냐: %d", _isClickObj);
 	D2DMANAGER->drawText(str, CAMERA->getPosX(), CAMERA->getPosY() + 680, 30);
 
-	swprintf_s(str, L"saveStartPtX: %d", _pickSampleStartPointX);
+	/*swprintf_s(str, L"saveStartPtX: %d", _pickSampleStartPointX);
 	D2DMANAGER->drawText(str, CAMERA->getPosX() + 130, CAMERA->getPosY() + 600, 25);
 	swprintf_s(str, L"saveStartPtY: %d", _pickSampleStartPointY);
 	D2DMANAGER->drawText(str, CAMERA->getPosX() + 130, CAMERA->getPosY() + 630, 25);
 	swprintf_s(str, L"saveEndPtX: %d", _pickSampleEndPointX);
 	D2DMANAGER->drawText(str, CAMERA->getPosX() + 130, CAMERA->getPosY() + 660, 25);
 	swprintf_s(str, L"saveEndPtY: %d", _pickSampleEndPointY);
-	D2DMANAGER->drawText(str, CAMERA->getPosX() + 130, CAMERA->getPosY() + 690, 25);
+	D2DMANAGER->drawText(str, CAMERA->getPosX() + 130, CAMERA->getPosY() + 690, 25);*/
 
 	swprintf_s(str, L"isClick: %d", _isClick);
 	D2DMANAGER->drawText(str, CAMERA->getPosX() + 130, CAMERA->getPosY() + 720, 25);
@@ -398,6 +399,7 @@ void mapTool::cbSelectY()
 void mapTool::map1()
 {
 	_mapType = MAP_TYPE_ONE;
+
 	for (int i = TILEY - 1; i >= 0; i--)
 	{
 		for (int j = TILEX - 1; j >= 0; j--)
@@ -410,10 +412,35 @@ void mapTool::map1()
 		}
 		_vvTile.pop_back();
 	}
-	mapToolSetting();
-	//비어있으면 비어있는거 가져오고
-	//저장된거 있으면 저장된거 가져오자
-	//load();		//매개변수로 현재 타일 개수 받아올까..
+	for (int i = 0; i < TILEY; ++i)
+	{
+		vector<tagTile*> vTile;
+		for (int j = 0; j < TILEX; ++j)
+		{
+			tagTile* tile = new tagTile;
+			tile->backgroundIndex = 7;
+			tile->backgroundX = NULL;
+			tile->backgroundY = NULL;
+
+			tile->tileImgIndex = 1;
+			tile->terrainFrameX = NULL;
+			tile->terrainFrameY = NULL;
+
+			tile->objImgIndex = 1;
+			tile->objectFrameX = NULL;
+			tile->objectFrameY = NULL;
+
+			tile->zOrderFrameX = NULL;
+			tile->zOrderFrameY = NULL;
+			tile->attr = TS_NONE;
+			tile->isBackground = false;
+			tile->isObj = false;
+			tile->isZorder = false;
+
+			vTile.push_back(tile);
+		}
+		_vvTile.push_back(vTile);
+	}
 }
 
 void mapTool::map2()
@@ -431,7 +458,35 @@ void mapTool::map2()
 		}
 		_vvTile.pop_back();
 	}
-	mapToolSetting();
+	for (int i = 0; i < TILEY; ++i)
+	{
+		vector<tagTile*> vTile;
+		for (int j = 0; j < TILEX; ++j)
+		{
+			tagTile* tile = new tagTile;
+			tile->backgroundIndex = 7;
+			tile->backgroundX = NULL;
+			tile->backgroundY = NULL;
+
+			tile->tileImgIndex = 1;
+			tile->terrainFrameX = NULL;
+			tile->terrainFrameY = NULL;
+
+			tile->objImgIndex = 1;
+			tile->objectFrameX = NULL;
+			tile->objectFrameY = NULL;
+
+			tile->zOrderFrameX = NULL;
+			tile->zOrderFrameY = NULL;
+			tile->attr = TS_NONE;
+			tile->isBackground = false;
+			tile->isObj = false;
+			tile->isZorder = false;
+
+			vTile.push_back(tile);
+		}
+		_vvTile.push_back(vTile);
+	}
 	
 }
 
@@ -450,7 +505,35 @@ void mapTool::map3()
 		}
 		_vvTile.pop_back();
 	}
-	mapToolSetting();
+	for (int i = 0; i < TILEY; ++i)
+	{
+		vector<tagTile*> vTile;
+		for (int j = 0; j < TILEX; ++j)
+		{
+			tagTile* tile = new tagTile;
+			tile->backgroundIndex = 7;
+			tile->backgroundX = NULL;
+			tile->backgroundY = NULL;
+
+			tile->tileImgIndex = 1;
+			tile->terrainFrameX = NULL;
+			tile->terrainFrameY = NULL;
+
+			tile->objImgIndex = 1;
+			tile->objectFrameX = NULL;
+			tile->objectFrameY = NULL;
+
+			tile->zOrderFrameX = NULL;
+			tile->zOrderFrameY = NULL;
+			tile->attr = TS_NONE;
+			tile->isBackground = false;
+			tile->isObj = false;
+			tile->isZorder = false;
+
+			vTile.push_back(tile);
+		}
+		_vvTile.push_back(vTile);
+	}
 }
 
 void mapTool::map4()
@@ -468,7 +551,35 @@ void mapTool::map4()
 		}
 		_vvTile.pop_back();
 	}
-	mapToolSetting();
+	for (int i = 0; i < TILEY; ++i)
+	{
+		vector<tagTile*> vTile;
+		for (int j = 0; j < TILEX; ++j)
+		{
+			tagTile* tile = new tagTile;
+			tile->backgroundIndex = 7;
+			tile->backgroundX = NULL;
+			tile->backgroundY = NULL;
+
+			tile->tileImgIndex = 1;
+			tile->terrainFrameX = NULL;
+			tile->terrainFrameY = NULL;
+
+			tile->objImgIndex = 1;
+			tile->objectFrameX = NULL;
+			tile->objectFrameY = NULL;
+
+			tile->zOrderFrameX = NULL;
+			tile->zOrderFrameY = NULL;
+			tile->attr = TS_NONE;
+			tile->isBackground = false;
+			tile->isObj = false;
+			tile->isZorder = false;
+
+			vTile.push_back(tile);
+		}
+		_vvTile.push_back(vTile);
+	}
 }
 
 //처음에 생성한 맵의 빈 타일 초기화
@@ -780,103 +891,114 @@ void mapTool::save()
 		WriteFile(file, mapSize, strlen(mapSize), &write, NULL);
 
 		CloseHandle(file);
-
+	
 		tagTile* tile = new tagTile[TILEX * TILEY];
-		/*
 		for (int i = 0; i < TILEY; ++i)
 		{
 			for (int j = 0; j < TILEX; ++j)
 			{
 				tile[j + i * TILEX] = *_vvTile[i][j];
-
-				//마을맵의 포탈 정보 입력
-				if (mapCase == 1)		//마을의 포탈
-				{
-					//필드로 가는 포탈
-					_vvTile[8][7]->attr |= ATTR_POTAL;
-					_vvTile[9][7]->attr |= ATTR_POTAL;
-					_vvTile[10][7]->attr |= ATTR_POTAL;
-
-					//집으로 가는 포탈
-					_vvTile[15][23]->attr |= ATTR_POTAL;
-
-					//오박사 실험실 포탈
-					_vvTile[16][36]->attr |= ATTR_POTAL;
-
-					//상점으로 이동하는 포탈
-					_vvTile[26][38]->attr |= ATTR_POTAL;
-
-					//센터로 이동하는 포탈
-					_vvTile[26][33]->attr |= ATTR_POTAL;
-
-					//체육관으로 이동하는 포탈
-					_vvTile[26][26]->attr |= ATTR_POTAL;
-
-				}
-				//플레이어 집의 포탈 정보 입력
-				if (mapCase == 2)
-				{
-					//마을로 이동하는 포탈
-					_vvTile[15][15]->attr |= ATTR_POTAL;
-				}
-				//오박사 연구소의 포탈정보 입력
-				if (mapCase == 3)
-				{
-					//마을로 이동하는 포탈
-					_vvTile[21][16]->attr |= ATTR_POTAL;
-				}
-				//상점의 포탈정보 입력
-				if (mapCase == 4)
-				{
-					//마을로 이동하는 포탈
-					_vvTile[14][14]->attr |= ATTR_POTAL;
-				}
-				//포켓몬센터의 포탈정보 입력
-				if (mapCase == 5)
-				{
-					//마을로 이동하는 포탈 
-					_vvTile[15][17]->attr |= ATTR_POTAL;
-				}
-				//체육관의 포탈정보 입력
-				if (mapCase == 6)
-				{
-					//마을로 이동하는 포탈
-					_vvTile[21][16]->attr |= ATTR_POTAL;
-				}
-				//필드의 포탈정보 입력
-				if (mapCase == 7)
-				{
-					//마을로 이동하는 포탈
-					_vvTile[42][47]->attr |= ATTR_POTAL;
-					_vvTile[42][48]->attr |= ATTR_POTAL;
-					_vvTile[42][49]->attr |= ATTR_POTAL;
-					_vvTile[42][50]->attr |= ATTR_POTAL;
-					//동굴로 이동하는 포탈
-					_vvTile[15][52]->attr |= ATTR_POTAL;
-				}
-				//동굴의 포탈정보 입력
-				if (mapCase == 8)
-				{
-					//필드로 가는 포탈
-					_vvTile[40][31]->attr |= ATTR_POTAL;
-				}
 			}
 		}
-		*/
+
+		/*
+	for (int i = 0; i < TILEY; ++i)
+	{
+		for (int j = 0; j < TILEX; ++j)
+		{
+			tile[j + i * TILEX] = *_vvTile[i][j];
+
+			//마을맵의 포탈 정보 입력
+			if (mapCase == 1)		//마을의 포탈
+			{
+				//필드로 가는 포탈
+				_vvTile[8][7]->attr |= ATTR_POTAL;
+				_vvTile[9][7]->attr |= ATTR_POTAL;
+				_vvTile[10][7]->attr |= ATTR_POTAL;
+
+				//집으로 가는 포탈
+				_vvTile[15][23]->attr |= ATTR_POTAL;
+
+				//오박사 실험실 포탈
+				_vvTile[16][36]->attr |= ATTR_POTAL;
+
+				//상점으로 이동하는 포탈
+				_vvTile[26][38]->attr |= ATTR_POTAL;
+
+				//센터로 이동하는 포탈
+				_vvTile[26][33]->attr |= ATTR_POTAL;
+
+				//체육관으로 이동하는 포탈
+				_vvTile[26][26]->attr |= ATTR_POTAL;
+
+			}
+			//플레이어 집의 포탈 정보 입력
+			if (mapCase == 2)
+			{
+				//마을로 이동하는 포탈
+				_vvTile[15][15]->attr |= ATTR_POTAL;
+			}
+			//오박사 연구소의 포탈정보 입력
+			if (mapCase == 3)
+			{
+				//마을로 이동하는 포탈
+				_vvTile[21][16]->attr |= ATTR_POTAL;
+			}
+			//상점의 포탈정보 입력
+			if (mapCase == 4)
+			{
+				//마을로 이동하는 포탈
+				_vvTile[14][14]->attr |= ATTR_POTAL;
+			}
+			//포켓몬센터의 포탈정보 입력
+			if (mapCase == 5)
+			{
+				//마을로 이동하는 포탈
+				_vvTile[15][17]->attr |= ATTR_POTAL;
+			}
+			//체육관의 포탈정보 입력
+			if (mapCase == 6)
+			{
+				//마을로 이동하는 포탈
+				_vvTile[21][16]->attr |= ATTR_POTAL;
+			}
+			//필드의 포탈정보 입력
+			if (mapCase == 7)
+			{
+				//마을로 이동하는 포탈
+				_vvTile[42][47]->attr |= ATTR_POTAL;
+				_vvTile[42][48]->attr |= ATTR_POTAL;
+				_vvTile[42][49]->attr |= ATTR_POTAL;
+				_vvTile[42][50]->attr |= ATTR_POTAL;
+				//동굴로 이동하는 포탈
+				_vvTile[15][52]->attr |= ATTR_POTAL;
+			}
+			//동굴의 포탈정보 입력
+			if (mapCase == 8)
+			{
+				//필드로 가는 포탈
+				_vvTile[40][31]->attr |= ATTR_POTAL;
+			}
+		}
+	}
+	*/
 		HANDLE file2;
 		DWORD write2;
 		file2 = CreateFile(_mapDataNames[(MAP_TYPE)_mapType].c_str(), GENERIC_WRITE, NULL, NULL, CREATE_ALWAYS, FILE_ATTRIBUTE_NORMAL, NULL);
-
-		WriteFile(file2, tile, sizeof(tagTile) * TILEX * TILEY, &write2, NULL);
-
+	
+		WriteFile(file2, tile, sizeof(tagTile) * TILEX * TILEY, &write, NULL);
+	
 		CloseHandle(file2);
-
+	
 		delete[] tile;
 	}
 }
 
 void mapTool::load()
 {
+	//if (!sizeFileExists(_mapSizeNames) && !dataFileExists(_mapDataNames))
+	//	return;
+
 	for (int i = TILEY - 1; i >= 0; i--)
 	{
 		for (int j = TILEX - 1; j >= 0; j--)
@@ -952,61 +1074,164 @@ void mapTool::load()
 			_vvTile[i][j]->setTile(tile[j + i * TILEX]);
 		}
 	}
-	delete[] tile;
+	//delete[] tile;
 }
 
 //속성 세팅하는 함수
 void mapTool::setAttribute(UINT samplePage, UINT frameX, UINT frameY)
 {
 	DWORD storeAttr;
+	storeAttr = TS_NONE;
 	switch (_samplePage)
 	{
 	case 0:
-		//바닥
-		if ((frameX == 1 && frameY == 0) ||
-			((frameX >= 2 && frameX < SAMPLE_WIDTH_NUM) && frameY == 1) ||
-			(frameX == 0 || frameX == 1) && (frameY == 2 || frameY == 3) ||
-			(frameX >= 0 && frameX < SAMPLE_WIDTH_NUM - 2) && frameY == 4 ||
-			(frameX == 3 || frameX == 4) && frameY == 6)
+		//플레이어가 통과 못하는 타일
+		if ((frameX == 0 || frameX == 1) && (frameY >= 2 && frameY < 5))
 		{
-
+			storeAttr |= TS_UNMOVE;
 		}
-
-		//경사
-
-		//천장
-		//if ((frameX >= 2 && frameX < SAMPLE_WIDTH_NUM) && frameY == 0) ||
-		//	(frameX) && () || )
-
-
-		//물
-		//벽
-		//제트오더
-
+		//경사길 타일(각도 계산한 함수와 어떻게 연동할지 고민좀 해보자아)
+		if ((frameX >= 2 && frameX < SAMPLE_WIDTH_NUM) && (frameY == 0 || frameY == 3 || frameY == 4))
+		{
+			storeAttr |= TS_SLOPE;
+			if (frameY == 0)
+			{
+				storeAttr |= TS_WATER;
+				storeAttr |= TS_ZORDER;
+			}
+			if (frameY == 3)
+			{
+				storeAttr |= TS_CEILING;
+			}
+		}
+		if ((frameX >= 2 && frameX < SAMPLE_WIDTH_NUM) && (frameY == 1 || frameY == 2))
+		{
+			storeAttr |= TS_WATER;
+			storeAttr |= TS_ZORDER;
+		}
+		//zorder
+		if (((frameX >= 0 && frameX < SAMPLE_WIDTH_NUM - 2) && (frameY == 5 || frameY == 6) )||
+			((frameX == 4 ||frameX == 5) && (frameY == 7 || frameY == 8)))
+		{
+			storeAttr |= TS_ZORDER;
+		}
+		//가시
+		if ((frameX == 4 || frameX == 5) && (frameY == 5 || frameY == 6))
+		{
+			storeAttr |= TS_THORN_BUSH;
+		}
+		//포탈
+		if (frameX == 1 && frameY == 8)
+		{
+			storeAttr |= TS_POTAL;
+		}
 		break;
 	case 1:
-
+		if (((frameX == 0 || frameX == 1) && (frameY == 0 || frameY == 2)) ||
+			((frameX == SAMPLE_WIDTH_NUM - 1 && frameY == 3)) ||
+			((frameX >= 1 && frameX <= 3) && (frameY == 8)))
+		{
+			storeAttr |= TS_UNMOVE;
+		}
+		if ((frameX >= 2 && frameX < SAMPLE_WIDTH_NUM) && (frameY == 0 || frameY == 2))
+		{
+			storeAttr |= TS_SLOPE;
+			if (frameY == 0)
+				storeAttr |= TS_CEILING;
+		}
+		if ((((frameX >= 0 && frameX < 3) || frameX == SAMPLE_WIDTH_NUM - 1) && frameY == 1) ||
+			(frameX == 0 && frameY == 3) ||
+			((frameX == 1 || frameX == 2) && frameY == 7) ||
+			((frameX == SAMPLE_WIDTH_NUM - 2 || frameX == SAMPLE_WIDTH_NUM - 1) && frameY == 7) ||
+			(frameX == SAMPLE_WIDTH_NUM - 1 && (frameY == 8 ||frameY == 9)))
+		{
+			storeAttr |= TS_ZORDER;
+		}
+		if (frameX == 1 && frameY == 6)
+		{
+			storeAttr |= TS_POTAL;
+		}
 		break;
 	case 2:
-
+		if (((frameX >= 0 && frameX < 3) && frameY == 0) ||
+			((frameX == 2 || frameX == 3) && (frameY == 2 ||frameY == 3)))
+		{
+			storeAttr |= TS_UNMOVE;
+		}
+		if ((frameX == SAMPLE_WIDTH_NUM - 2 || frameX == SAMPLE_WIDTH_NUM - 1) && frameY == 1)
+		{
+			storeAttr == TS_DIALOGUE;
+		}
+		if (((frameX == SAMPLE_WIDTH_NUM - 2 || frameX == SAMPLE_WIDTH_NUM - 1) && (frameY == 2 || frameY == 3)) ||
+			((frameX == 1 || frameX == 2 || frameX == 4 || frameX == 5) && (frameY >= 6 && frameY <= 8)))
+		{
+			storeAttr |= TS_SLOPE;
+			storeAttr |= TS_ZORDER;
+			if (frameY == 8)
+				storeAttr |= TS_CEILING;
+			if ((frameX >= 1 && frameX < SAMPLE_WIDTH_NUM - 1) && (frameY == 6 || frameY == 7))
+			{
+				storeAttr |= TS_WATER;
+			}
+		}
+		if (frameX == 3 && (frameY == 6 || frameY == 7 || frameY == 8))
+		{
+			storeAttr |= TS_WATER;
+		}
+		if ((frameX >= 0 && frameX <= 2) && (frameY == 4 || frameY == 5) ||
+			(frameX == 2 && frameY == 1) ||
+			(frameX == 0 && frameY == 6))
+		{
+			storeAttr |= TS_ZORDER;
+		}
 		break;
 	case 3:
-
+	
 		break;
 	case 4:
-
+		if ((frameX >= 2 && frameX <= 4) && (frameY >= 5 && frameY <= 7))
+		{
+			storeAttr |= TS_UNMOVE;
+		}
+		if ((frameX == 2 || frameX == 3) && (frameY == 8 || frameY == 9))
+		{
+			storeAttr |= TS_ZORDER;
+		}
+		if (frameX == SAMPLE_WIDTH_NUM - 1 && frameY == 9)
+			storeAttr |= TS_POTAL;
 		break;
 	case 5:
+		if((frameX == 0 || frameX == 1) &&(frameY == 3 || frameY == 4))
+		{
+			storeAttr |= TS_UNMOVE;
+		}
+		if (frameX == 2 && frameY == 2)
+			storeAttr |= TS_DOOR;
+		if (((frameX == 2 && frameX == 3) && frameY == 0) ||
+			(frameX == 3 && (frameY == 1 || frameY == 2)))
+		{
+			storeAttr |= TS_FRAME;
+		}
 
 		break;
 	case 6:
+		if ((frameX >= 0 && frameX < SAMPLE_WIDTH_NUM - 2) && (frameY >= 0 && frameY < 5))
+		{
+			storeAttr |= TS_BACK;
+		}
 
 		break;
 	case 7:
-
+		if ((frameX >= 0 && frameX < SAMPLE_WIDTH_NUM - 2) && (frameY >= 0 && frameY < 5))
+		{
+			storeAttr |= TS_BACK;
+		}
 		break;
 	case 8:
-
+		if ((frameX >= 0 && frameX < SAMPLE_WIDTH_NUM - 2) && (frameY >= 0 && frameY < 5))
+		{
+			storeAttr |= TS_BACK;
+		}
 		break;
 
 	default:
@@ -1137,8 +1362,8 @@ void mapTool::decreaseMap()
 
 void mapTool::fileNameSet()
 {
-	//_mapSizeNames.insert(make_pair(MAP_TYPE_, "data/mapTypeOneMapSize.map"));
-	//_mapDataNames.insert(make_pair(MAP_TYPE_ONE, "data/mapTypeOneMapData.map"));
+	_mapSizeNames.insert(make_pair(MAP_TYPE_NONE, "data/testMapSize.map"));
+	_mapDataNames.insert(make_pair(MAP_TYPE_NONE, "data/testMapData.map"));
 
 	_mapSizeNames.insert(make_pair(MAP_TYPE_ONE, "data/mapTypeOneMapSize.map"));
 	_mapDataNames.insert(make_pair(MAP_TYPE_ONE, "data/mapTypeOneMapData.map"));
@@ -1151,8 +1376,8 @@ void mapTool::fileNameSet()
 
 	_mapSizeNames.insert(make_pair(MAP_TYPE_FOUR, "data/mapTypeFourMapSize.map"));
 	_mapDataNames.insert(make_pair(MAP_TYPE_FOUR, "data/mapTypeFourMapData.map"));
-
 }
+
 
 //오브젝트 버튼을 눌렀을 때 콜백 함수에 대입연산 될 함수
 void mapTool::selectObj()

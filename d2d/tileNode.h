@@ -3,18 +3,20 @@
 
 //TILE STATE							타일의 속성
 #define	TS_NONE					0X00000000
-#define TS_BACK					0X00000001		// 배경타일
-#define TS_FLOOR				0X00000002		// 바닥
-#define TS_WALL					0X00000004		// 벽
-#define TS_SLOPE				0X00000008		// 경사길
-#define TS_WATER				0X00000010		// 물
-//#define TS_WATER_SLOPE			0X00000020		// 물에서 경사길
-#define TS_CEILING				0X00000020		// 천장
-#define TS_ZORDER				0X00000040		// 제트오더용 tile
-#define TS_THORN_BUSH			0X00000080		// 닿으면 바로 죽는 덤불
-#define TS_CHAIN				0X00000100		// 쇠사슬
-#define TS_POTAL				0X00000200		// 포탈
+#define TS_BACK					0X00000001		//배경타일
+#define TS_UNMOVE				0X00000002		//통과 못하는 타일
+#define TS_WALL					0X00000004		//벽
+#define TS_SLOPE				0X00000008		//경사길
+#define TS_WATER				0X00000010		//물
+#define TS_DIALOGUE				0X00000020		//다이얼로그가 뜨는 것
 
+//#define TS_WATER_SLOPE			0X00000020	// 물에서 경사길
+#define TS_CEILING				0X00000020		//천장
+#define TS_ZORDER				0X00000040		//제트오더용 tile
+#define TS_THORN_BUSH			0X00000080		//닿으면 바로 죽는 덤불
+//#define TS_CHAIN				0X00000100		//쇠사슬
+#define TS_POTAL				0X00000200		//포탈
+#define TS_DOOR					0X00000400		//문
 
 //============= << 프레임 오브젝트의 경우에는 맵에 찍고나서 frame으로 출력하도록 해보자 >> ===============
 #define TS_FRAME				0X00100000		//프레임이 있는 tile 들
