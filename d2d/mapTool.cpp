@@ -112,6 +112,7 @@ HRESULT mapTool::init()
 	IMAGEMANAGER->addFrameImage("map2", L"image/buttonImg/Y축.png", 60, 120, 1, 2);
 	IMAGEMANAGER->addFrameImage("map3", L"image/buttonImg/X축.png", 60, 120, 1, 2);
 	IMAGEMANAGER->addFrameImage("map4", L"image/buttonImg/Y축.png", 60, 120, 1, 2);
+	IMAGEMANAGER->addFrameImage("map5", L"image/buttonImg/Y축.png", 60, 120, 1, 2);
 	//저장버튼
 	IMAGEMANAGER->addFrameImage("saveButton", L"image/buttonImg/X축.png", 60, 120, 1, 2);
 	IMAGEMANAGER->addFrameImage("loadButton", L"image/buttonImg/Y축.png", 60, 120, 1, 2);
@@ -120,6 +121,7 @@ HRESULT mapTool::init()
 	_map2 = std::move(bind(&mapTool::map2, this));
 	_map3 = std::move(bind(&mapTool::map3, this));
 	_map4 = std::move(bind(&mapTool::map4, this));
+	_map5 = std::move(bind(&mapTool::map5, this));
 	//저장 기능을 함수대입 함
 	_save = std::move(bind(&mapTool::save, this));
 	//불러오기 기능을 함수대입 함
@@ -133,6 +135,8 @@ HRESULT mapTool::init()
 	_mapThree->init("map3", 150, 750, PointMake(0, 1), PointMake(0, 0), _map3);
 	_mapFour = new button;
 	_mapFour->init("map4", 200, 750, PointMake(0, 1), PointMake(0, 0), _map4);
+	_mapFive = new button;
+	_mapFive->init("map5", 250, 750, PointMake(0, 1), PointMake(0, 0), _map5);
 
 	//저장 버튼( 이 버튼을 눌러야 해당 케이스에 정보가 저장이 됨)
 	_saveButton = new button;
@@ -163,6 +167,8 @@ void mapTool::update()
 	_mapTwo->update(100, 750);
 	_mapThree->update(150, 750);
 	_mapFour->update(200, 750);
+	_mapFive->update(250, 750);
+
 	_saveButton->update(400, 750);
 	_loadButton->update(400, 800);
 
@@ -202,6 +208,7 @@ void mapTool::render()
 	_mapTwo->render();
 	_mapThree->render();
 	_mapFour->render();
+	_mapFive->render();
 	//저장버튼
 	_saveButton->render();
 	//불러오기버튼
@@ -557,6 +564,52 @@ void mapTool::map3()
 void mapTool::map4()
 {
 	_mapType = MAP_TYPE_FOUR;
+	for (int i = TILEY - 1; i >= 0; i--)
+	{
+		for (int j = TILEX - 1; j >= 0; j--)
+		{
+			if (_vvTile[i][j])
+			{
+				SAFE_DELETE(_vvTile[i][j]);
+				_vvTile[i].pop_back();
+			}
+		}
+		_vvTile.pop_back();
+	}
+	for (int i = 0; i < TILEY; ++i)
+	{
+		vector<tagTile*> vTile;
+		for (int j = 0; j < TILEX; ++j)
+		{
+			tagTile* tile = new tagTile;
+			tile->backgroundIndex = 7;
+			tile->backgroundX = NULL;
+			tile->backgroundY = NULL;
+
+			tile->tileImgIndex = 1;
+			tile->terrainFrameX = NULL;
+			tile->terrainFrameY = NULL;
+
+			tile->objImgIndex = 1;
+			tile->objectFrameX = NULL;
+			tile->objectFrameY = NULL;
+
+			tile->zOrderFrameX = NULL;
+			tile->zOrderFrameY = NULL;
+			tile->attr = TS_NONE;
+			tile->isBackground = false;
+			tile->isObj = false;
+			tile->isZorder = false;
+
+			vTile.push_back(tile);
+		}
+		_vvTile.push_back(vTile);
+	}
+}
+
+void mapTool::map5()
+{
+	_mapType = MAP_TYPE_FIVE;
 	for (int i = TILEY - 1; i >= 0; i--)
 	{
 		for (int j = TILEX - 1; j >= 0; j--)

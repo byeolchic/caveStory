@@ -66,6 +66,7 @@ private:
 	button*		_mapTwo;
 	button*		_mapThree;
 	button*		_mapFour;
+	button*		_mapFive;
 	//저장버튼
 	button*		_saveButton;
 	button*		_loadButton;
@@ -136,10 +137,12 @@ public:
 	function<void(void)> _map2;
 	function<void(void)> _map3;
 	function<void(void)> _map4;
+	function<void(void)> _map5;
 	void map1();
 	void map2();
 	void map3();
 	void map4();
+	void map5();
 
 	function<void(void)> _save;
 	void save();
