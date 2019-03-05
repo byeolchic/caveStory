@@ -305,17 +305,35 @@ void mapTool::render()
 	swprintf_s(str, L"오브젝트냐: %d", _isClickObj);
 	D2DMANAGER->drawText(str, CAMERA->getPosX(), CAMERA->getPosY() + 680, 30);
 
-	/*swprintf_s(str, L"saveStartPtX: %d", _pickSampleStartPointX);
-	D2DMANAGER->drawText(str, CAMERA->getPosX() + 130, CAMERA->getPosY() + 600, 25);
+	for (int i = 0; i < TILEY; ++i)
+	{
+		for (int j = 0; j < TILEX; ++j)
+		{
+			//X축 카메라 범위를 벗어나면 continue
+			if (40 + (j * TILE_SIZE) - CAMERA->getPosX() < 0)
+				continue;
+			if (40 + ((j + 1) * TILE_SIZE) - CAMERA->getPosX() > CAMERA_SHOW_RANGE_W)
+				continue;
+			//Y축 카메라 범위를 벗어나면 continue
+			if (40 + (i * TILE_SIZE) - CAMERA->getPosY() < 0)
+				continue;
+			if (40 + ((i + 1) * TILE_SIZE) - CAMERA->getPosY() > CAMERA_SHOW_RANGE_H)
+				continue;
+			swprintf_s(str, L"%d", _vvTile[i][j]->attr);
+			D2DMANAGER->drawText(str, 40 + j * TILE_SIZE, 40 + i * TILE_SIZE, 10, RGB(255,255,255));
+		}
+	}
+	/*
+
 	swprintf_s(str, L"saveStartPtY: %d", _pickSampleStartPointY);
 	D2DMANAGER->drawText(str, CAMERA->getPosX() + 130, CAMERA->getPosY() + 630, 25);
 	swprintf_s(str, L"saveEndPtX: %d", _pickSampleEndPointX);
 	D2DMANAGER->drawText(str, CAMERA->getPosX() + 130, CAMERA->getPosY() + 660, 25);
 	swprintf_s(str, L"saveEndPtY: %d", _pickSampleEndPointY);
-	D2DMANAGER->drawText(str, CAMERA->getPosX() + 130, CAMERA->getPosY() + 690, 25);*/
+	D2DMANAGER->drawText(str, CAMERA->getPosX() + 130, CAMERA->getPosY() + 690, 25);
 
 	swprintf_s(str, L"isClick: %d", _isClick);
-	D2DMANAGER->drawText(str, CAMERA->getPosX() + 130, CAMERA->getPosY() + 720, 25);
+	D2DMANAGER->drawText(str, CAMERA->getPosX() + 130, CAMERA->getPosY() + 720, 25);*/
 
 
 
@@ -639,17 +657,25 @@ void mapTool::pickSample()
 		switch (_samplePage)
 		{
 		case 1:
-			//바닥
-			if ((frameX >= 0 && frameX < SAMPLE_WIDTH_NUM) && ((frameY >= 0 && frameY < 4) || (frameY >= 6 && frameY < SAMPLE_HEIGHT_NUM)) ||
-				(frameX >= 0 && frameX < SAMPLE_WIDTH_NUM - 1) && (frameY == 4 || frameY == 5))
+			if ((frameX >= 0 && frameX < SAMPLE_WIDTH_NUM) && (frameY >= 0 && frameY < SAMPLE_HEIGHT_NUM))
 			{
-				// 클릭하여 선택한 샘플을 저장하는 변수에 넣어줌
 				_pickSample.tileImgPage = SAMPLE_TILE_IMAGEKEY_01;
 				_pickSample.indX = frameX;
 				_pickSample.indY = frameY;
 				_pickSampleStartPointX = frameX;
 				_pickSampleStartPointY = frameY;
-				break;
+			}
+			//if ((frameX >= 0 && frameX < SAMPLE_WIDTH_NUM) && ((frameY >= 0 && frameY < 4) || (frameY >= 6 && frameY < SAMPLE_HEIGHT_NUM)) ||
+			//	(frameX >= 0 && frameX < SAMPLE_WIDTH_NUM - 1) && (frameY == 4 || frameY == 5))
+			//{
+			//	// 클릭하여 선택한 샘플을 저장하는 변수에 넣어줌
+			//	_pickSample.tileImgPage = SAMPLE_TILE_IMAGEKEY_01;
+			//	_pickSample.indX = frameX;
+			//	_pickSample.indY = frameY;
+			//	_pickSampleStartPointX = frameX;
+			//	_pickSampleStartPointY = frameY;
+			//}
+			break;
 
 		case 2:case 3:case 4:
 			if ((frameX >= 0 && frameX < SAMPLE_WIDTH_NUM) && (frameY >= 0 && frameY < SAMPLE_HEIGHT_NUM))
@@ -666,9 +692,33 @@ void mapTool::pickSample()
 				_pickSampleStartPointX = frameX;
 				_pickSampleStartPointY = frameY;
 			}
+			/*
+			if ((frameX >= 0 && frameX < SAMPLE_WIDTH_NUM) && (frameY >= 0 && frameY < SAMPLE_HEIGHT_NUM))
+			{
+				if (_samplePage == 2)
+					_pickSample.tileImgPage = SAMPLE_TILE_IMAGEKEY_02;
+				else if (_samplePage == 3)
+					_pickSample.tileImgPage = SAMPLE_TILE_IMAGEKEY_03;
+				else if (_samplePage == 4)
+					_pickSample.tileImgPage = SAMPLE_TILE_IMAGEKEY_04;
+
+				_pickSample.indX = frameX;
+				_pickSample.indY = frameY;
+				_pickSampleStartPointX = frameX;
+				_pickSampleStartPointY = frameY;
+			}*/
 			break;
 
 		case 5:
+			if ((frameX >= 0 && frameX < SAMPLE_WIDTH_NUM) && (frameY >= 0 && frameY < SAMPLE_HEIGHT_NUM))
+			{
+				_pickSample.tileImgPage = SAMPLE_TILE_IMAGEKEY_05;
+				_pickSample.indX = frameX;
+				_pickSample.indY = frameY;
+				_pickSampleStartPointX = frameX;
+				_pickSampleStartPointY = frameY;
+			}
+			/*
 			if ((frameX >= 0 && frameX < SAMPLE_WIDTH_NUM - 1) && (frameY == 0 || frameY == 4 || frameY == 5) ||
 				((frameX >= 0 && frameX < SAMPLE_WIDTH_NUM) && ((frameY >= 1 && frameY < 4) || (frameY >= 6 && frameY < SAMPLE_HEIGHT_NUM))))
 			{
@@ -678,10 +728,18 @@ void mapTool::pickSample()
 				_pickSample.indY = frameY;
 				_pickSampleStartPointX = frameX;
 				_pickSampleStartPointY = frameY;
-			}
+			}*/
 			break;
 
 		case 6:
+			if ((frameX >= 0 && frameX < SAMPLE_WIDTH_NUM) && (frameY >= 0 && frameY < SAMPLE_HEIGHT_NUM))
+			{
+				_pickSample.tileImgPage = SAMPLE_TILE_IMAGEKEY_06;
+				_pickSample.indX = frameX;
+				_pickSample.indY = frameY;
+				_pickSampleStartPointX = frameX;
+				_pickSampleStartPointY = frameY;
+			}/*
 			if ((frameX >= 0 && frameX < 4) && (frameY >= 0 && frameY < 3) ||
 				(frameX >= 0 && frameX < 3) && (frameY == 3 || frameY == 4))
 			{
@@ -690,7 +748,7 @@ void mapTool::pickSample()
 				_pickSample.indX = frameX;
 				_pickSample.indY = frameY;
 			
-			}
+			}*/
 			break;
 
 		case 7: case 8: case 9:
@@ -710,10 +768,10 @@ void mapTool::pickSample()
 				
 				_isBackground = true;
 			}
-
+			break;
 		default:
 			break;
-			}
+			
 			//_isClick = true;
 		}
 	}
@@ -790,6 +848,9 @@ void mapTool::drawMap()
 									_vvTile[i + drawAreaY][j + drawAreaX]->objectFrameX = _pickSample.indX + drawAreaX;
 									_vvTile[i + drawAreaY][j + drawAreaX]->objectFrameY = _pickSample.indY + drawAreaY;
 									_vvTile[i + drawAreaY][j + drawAreaX]->isObj = true;
+									_vvTile[i + drawAreaY][j + drawAreaX]->attr = setAttribute(SAMPLETILENAME[_samplePage]
+																							   , _vvTile[i + drawAreaY][j + drawAreaX]->objectFrameX
+																							   , _vvTile[i + drawAreaY][j + drawAreaX]->objectFrameY);
 								}
 								drawAreaX = 0;
 							}
@@ -815,6 +876,10 @@ void mapTool::drawMap()
 									_vvTile[i + drawAreaY][j + drawAreaX]->tileImgIndex = _pickSample.tileImgPage;
 									_vvTile[i + drawAreaY][j + drawAreaX]->terrainFrameX = _pickSample.indX + drawAreaX;
 									_vvTile[i + drawAreaY][j + drawAreaX]->terrainFrameY = _pickSample.indY + drawAreaY;
+									_vvTile[i + drawAreaY][j + drawAreaX]->attr = setAttribute(SAMPLETILENAME[_samplePage]
+																							   , _vvTile[i + drawAreaY][j + drawAreaX]->terrainFrameX
+																							   , _vvTile[i + drawAreaY][j + drawAreaX]->terrainFrameY);
+
 								}
 								drawAreaX = 0;
 							}
@@ -841,6 +906,9 @@ void mapTool::drawMap()
 									_vvTile[i + drawAreaY][j + drawAreaX]->backgroundX = _pickSample.indX + drawAreaX;
 									_vvTile[i + drawAreaY][j + drawAreaX]->backgroundY = _pickSample.indY + drawAreaY;
 									_vvTile[i + drawAreaY][j + drawAreaX]->isBackground = true;
+									_vvTile[i + drawAreaY][j + drawAreaX]->attr = setAttribute(SAMPLETILENAME[_samplePage]
+																							   , _vvTile[i + drawAreaY][j + drawAreaX]->backgroundX
+																							   , _vvTile[i + drawAreaY][j + drawAreaX]->backgroundY);
 								}
 								drawAreaX = 0;
 							}
@@ -1078,13 +1146,13 @@ void mapTool::load()
 }
 
 //속성 세팅하는 함수
-void mapTool::setAttribute(UINT samplePage, UINT frameX, UINT frameY)
+DWORD mapTool::setAttribute(string samplePage, UINT frameX, UINT frameY)
 {
 	DWORD storeAttr;
 	storeAttr = TS_NONE;
 	switch (_samplePage)
 	{
-	case 0:
+	case 1:
 		//플레이어가 통과 못하는 타일
 		if ((frameX == 0 || frameX == 1) && (frameY >= 2 && frameY < 5))
 		{
@@ -1126,12 +1194,21 @@ void mapTool::setAttribute(UINT samplePage, UINT frameX, UINT frameY)
 			storeAttr |= TS_POTAL;
 		}
 		break;
-	case 1:
-		if (((frameX == 0 || frameX == 1) && (frameY == 0 || frameY == 2)) ||
-			((frameX == SAMPLE_WIDTH_NUM - 1 && frameY == 3)) ||
-			((frameX >= 1 && frameX <= 3) && (frameY == 8)))
+	case 2:
+		if ((frameX == 0 || frameX == 1) && (frameY >= 0 && frameY < 3) ||
+			(frameX == SAMPLE_WIDTH_NUM - 1 && frameY == 3) ||
+			((frameX >= 1 && frameX < 4) && frameY == 8))
 		{
 			storeAttr |= TS_UNMOVE;
+		}
+		if ((frameX == 0 &&(frameY == 3 ||frameY == 4)) ||
+			((frameX == 2 || frameX == 5) && frameY == 1)||
+			((frameX >= 2 && frameX < 5) && frameY == 2) ||
+			(frameX == 0 && frameY == 4) ||
+			((frameX >= 0 && frameX <SAMPLE_WIDTH_NUM) && frameY == 7) ||
+			(frameX == SAMPLE_WIDTH_NUM - 1 && (frameY == 8 ||frameY ==9)))
+		{
+			storeAttr |= TS_ZORDER;
 		}
 		if ((frameX >= 2 && frameX < SAMPLE_WIDTH_NUM) && (frameY == 0 || frameY == 2))
 		{
@@ -1139,22 +1216,13 @@ void mapTool::setAttribute(UINT samplePage, UINT frameX, UINT frameY)
 			if (frameY == 0)
 				storeAttr |= TS_CEILING;
 		}
-		if ((((frameX >= 0 && frameX < 3) || frameX == SAMPLE_WIDTH_NUM - 1) && frameY == 1) ||
-			(frameX == 0 && frameY == 3) ||
-			((frameX == 1 || frameX == 2) && frameY == 7) ||
-			((frameX == SAMPLE_WIDTH_NUM - 2 || frameX == SAMPLE_WIDTH_NUM - 1) && frameY == 7) ||
-			(frameX == SAMPLE_WIDTH_NUM - 1 && (frameY == 8 ||frameY == 9)))
-		{
-			storeAttr |= TS_ZORDER;
-		}
 		if (frameX == 1 && frameY == 6)
 		{
 			storeAttr |= TS_POTAL;
 		}
 		break;
-	case 2:
-		if (((frameX >= 0 && frameX < 3) && frameY == 0) ||
-			((frameX == 2 || frameX == 3) && (frameY == 2 ||frameY == 3)))
+	case 3:
+		if (frameX == 0 && frameY == 0)
 		{
 			storeAttr |= TS_UNMOVE;
 		}
@@ -1162,33 +1230,33 @@ void mapTool::setAttribute(UINT samplePage, UINT frameX, UINT frameY)
 		{
 			storeAttr == TS_DIALOGUE;
 		}
-		if (((frameX == SAMPLE_WIDTH_NUM - 2 || frameX == SAMPLE_WIDTH_NUM - 1) && (frameY == 2 || frameY == 3)) ||
-			((frameX == 1 || frameX == 2 || frameX == 4 || frameX == 5) && (frameY >= 6 && frameY <= 8)))
+		if ((frameX == 1 || frameX == 2 || frameX == 4 || frameX == 5) && (frameY >= 6 && frameY <= 8))
 		{
 			storeAttr |= TS_SLOPE;
-			storeAttr |= TS_ZORDER;
 			if (frameY == 8)
 				storeAttr |= TS_CEILING;
-			if ((frameX >= 1 && frameX < SAMPLE_WIDTH_NUM - 1) && (frameY == 6 || frameY == 7))
-			{
-				storeAttr |= TS_WATER;
-			}
 		}
-		if (frameX == 3 && (frameY == 6 || frameY == 7 || frameY == 8))
+		if (((frameX >= 1 && frameX < SAMPLE_WIDTH_NUM) && (frameY == 7 ||frameY == 8) ) ||
+			((frameX >= 1 && frameX < SAMPLE_WIDTH_NUM - 1) && frameY == 6))
 		{
 			storeAttr |= TS_WATER;
 		}
 		if ((frameX >= 0 && frameX <= 2) && (frameY == 4 || frameY == 5) ||
-			(frameX == 2 && frameY == 1) ||
-			(frameX == 0 && frameY == 6))
+			(frameX == 2 && (frameY == 0 || frameY == 1)) ||
+			(frameX >= 0 && frameX < SAMPLE_WIDTH_NUM)&& (frameY >= 6 && frameY <= 8 ))
 		{
 			storeAttr |= TS_ZORDER;
 		}
 		break;
-	case 3:
-	
-		break;
 	case 4:
+		if ((frameX == SAMPLE_WIDTH_NUM - 1 && (frameY == 0 || frameY == 1)) ||
+			((frameX >= 0 && frameX < SAMPLE_WIDTH_NUM - 2) && (frameY == 2 || frameY == 3)))
+		{
+			storeAttr |= TS_WATER;
+			storeAttr |= TS_ZORDER;
+		}
+		break;
+	case 5:
 		if ((frameX >= 2 && frameX <= 4) && (frameY >= 5 && frameY <= 7))
 		{
 			storeAttr |= TS_UNMOVE;
@@ -1200,13 +1268,16 @@ void mapTool::setAttribute(UINT samplePage, UINT frameX, UINT frameY)
 		if (frameX == SAMPLE_WIDTH_NUM - 1 && frameY == 9)
 			storeAttr |= TS_POTAL;
 		break;
-	case 5:
-		if((frameX == 0 || frameX == 1) &&(frameY == 3 || frameY == 4))
+	case 6:
+		/*if((frameX == 0 || frameX == 1) &&(frameY == 3 || frameY == 4))
 		{
 			storeAttr |= TS_UNMOVE;
-		}
+		}*/
 		if (frameX == 2 && frameY == 2)
+		{
 			storeAttr |= TS_DOOR;
+			storeAttr |= TS_FRAME;
+		}
 		if (((frameX == 2 && frameX == 3) && frameY == 0) ||
 			(frameX == 3 && (frameY == 1 || frameY == 2)))
 		{
@@ -1214,21 +1285,21 @@ void mapTool::setAttribute(UINT samplePage, UINT frameX, UINT frameY)
 		}
 
 		break;
-	case 6:
-		if ((frameX >= 0 && frameX < SAMPLE_WIDTH_NUM - 2) && (frameY >= 0 && frameY < 5))
+	case 7:
+		if ((frameX >= 0 && frameX < SAMPLE_WIDTH_NUM - 1) && (frameY >= 0 && frameY < 5))
 		{
 			storeAttr |= TS_BACK;
 		}
 
 		break;
-	case 7:
-		if ((frameX >= 0 && frameX < SAMPLE_WIDTH_NUM - 2) && (frameY >= 0 && frameY < 5))
+	case 8:
+		if ((frameX >= 0 && frameX < SAMPLE_WIDTH_NUM - 1) && (frameY >= 0 && frameY < 5))
 		{
 			storeAttr |= TS_BACK;
 		}
 		break;
-	case 8:
-		if ((frameX >= 0 && frameX < SAMPLE_WIDTH_NUM - 2) && (frameY >= 0 && frameY < 5))
+	case 9:
+		if ((frameX >= 0 && frameX < SAMPLE_WIDTH_NUM - 1) && (frameY >= 0 && frameY < 5))
 		{
 			storeAttr |= TS_BACK;
 		}
@@ -1237,7 +1308,7 @@ void mapTool::setAttribute(UINT samplePage, UINT frameX, UINT frameY)
 	default:
 		break;
 	}
-
+	return storeAttr;
 }
 
 //X축 감소

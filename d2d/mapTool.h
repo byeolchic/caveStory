@@ -120,7 +120,7 @@ public:
 	void pickSample();			//샘플 타일을 선택하는 함수
 	void drawMap();				//선택한 샘플을 맵에 그리는 함수
 	
-	void setAttribute(UINT samplePage, UINT frameX, UINT frameY);
+	DWORD setAttribute(string samplePage, UINT frameX, UINT frameY);
 
 	function<void(void)> _increaseMap;
 	function<void(void)> _decreaseMap;
