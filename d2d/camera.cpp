@@ -37,7 +37,7 @@ void camera::release()
 
 void camera::update()
 {
-	if (KEYMANAGER->isStayKeyDown(VK_LEFT)  && _posX > 0)
+	/*if (KEYMANAGER->isStayKeyDown(VK_LEFT)  && _posX > 0)
 	{
 		_posX -= CAMERA_SPEED;
 		if (_posX < 0)
@@ -60,7 +60,13 @@ void camera::update()
 	if (KEYMANAGER->isStayKeyDown(VK_DOWN))
 	{
 		_posY++;
-	}
+	}*/
+}
+
+void camera::move(float x, float y)
+{
+	_posX = x - WINSIZEX / 2;
+	_posY = y - WINSIZEY / 2;
 }
 
 void camera::mapToolMove()

@@ -24,6 +24,7 @@ public:
 
 	void release();
 	void update();
+	void move(float	x, float y);
 	void mapToolMove();
 
 	float getPosX() { return _posX; }

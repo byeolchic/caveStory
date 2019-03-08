@@ -1,5 +1,6 @@
 #pragma once
 //#define SAMPLE_NUM			9
+#define TILE_SIZE			40
 
 //TILE STATE							타일의 속성
 #define	TS_NONE					0X00000000
@@ -10,7 +11,7 @@
 #define TS_WATER				0X00000010		//물
 #define TS_DIALOGUE				0X00000020		//다이얼로그가 뜨는 것
 
-//#define TS_WATER_SLOPE			0X00000020	// 물에서 경사길
+//#define TS_WATER_SLOPE			0X00000020	//물에서 경사길
 #define TS_CEILING				0X00000020		//천장
 #define TS_ZORDER				0X00000040		//제트오더용 tile
 #define TS_THORN_BUSH			0X00000080		//닿으면 바로 죽는 덤불
@@ -25,6 +26,8 @@
 #define TS_LIFE_CAPSULE			0X00800000		//라이프 캡슐
 #define TS_LIFE_CHARGE			0X01000000		//라이프 충전기
 #define TS_SAVE					0X02000000		//세이브 오브젝트
+
+
 
 enum MAP_TYPE
 {

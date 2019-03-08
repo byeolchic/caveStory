@@ -68,8 +68,8 @@ HRESULT mapTool::init()
 
 	mapToolSetting();			//맵툴의 기본 타일들의정보를 setting함
 
-	TILEX = _reSizeX = MAP_WIDTH_NUM;
-	TILEY = _reSizeY = MAP_HEIGHT_NUM;
+	TILEX = MAP_WIDTH_NUM;
+	TILEY = MAP_HEIGHT_NUM;
 
 	_isClick = false;
 
@@ -108,14 +108,14 @@ HRESULT mapTool::init()
 	//todo : 나중에 저장하는 버튼, mapt 타입을 선택하는 버튼을 만들고 나서 그 이미지로 바꿀것.
 	_mapType = 0;
 
-	IMAGEMANAGER->addFrameImage("map1", L"image/buttonImg/X축.png", 60, 120, 1, 2);
-	IMAGEMANAGER->addFrameImage("map2", L"image/buttonImg/Y축.png", 60, 120, 1, 2);
-	IMAGEMANAGER->addFrameImage("map3", L"image/buttonImg/X축.png", 60, 120, 1, 2);
-	IMAGEMANAGER->addFrameImage("map4", L"image/buttonImg/Y축.png", 60, 120, 1, 2);
-	IMAGEMANAGER->addFrameImage("map5", L"image/buttonImg/Y축.png", 60, 120, 1, 2);
+	IMAGEMANAGER->addFrameImage("map1", L"image/buttonImg/map1Button.png", 100, 120, 1, 2);
+	IMAGEMANAGER->addFrameImage("map2", L"image/buttonImg/map2Button.png", 100, 120, 1, 2);
+	IMAGEMANAGER->addFrameImage("map3", L"image/buttonImg/map3Button.png", 100, 120, 1, 2);
+	IMAGEMANAGER->addFrameImage("map4", L"image/buttonImg/map4Button.png", 100, 120, 1, 2);
+	IMAGEMANAGER->addFrameImage("map5", L"image/buttonImg/map5Button.png", 100, 120, 1, 2);
 	//저장버튼
-	IMAGEMANAGER->addFrameImage("saveButton", L"image/buttonImg/X축.png", 60, 120, 1, 2);
-	IMAGEMANAGER->addFrameImage("loadButton", L"image/buttonImg/Y축.png", 60, 120, 1, 2);
+	IMAGEMANAGER->addFrameImage("saveButton", L"image/buttonImg/saveButton.png", 60, 120, 1, 2);
+	IMAGEMANAGER->addFrameImage("loadButton", L"image/buttonImg/loadButton.png", 60, 120, 1, 2);
 
 	_map1 = std::move(bind(&mapTool::map1, this));
 	_map2 = std::move(bind(&mapTool::map2, this));
@@ -130,22 +130,39 @@ HRESULT mapTool::init()
 	_mapOne = new button;
 	_mapOne->init("map1", 50, 750, PointMake(0, 1), PointMake(0, 0), _map1);
 	_mapTwo = new button;
-	_mapTwo->init("map2", 100, 750, PointMake(0, 1), PointMake(0, 0), _map2);
+	_mapTwo->init("map2", 160, 750, PointMake(0, 1), PointMake(0, 0), _map2);
 	_mapThree = new button;
-	_mapThree->init("map3", 150, 750, PointMake(0, 1), PointMake(0, 0), _map3);
+	_mapThree->init("map3", 270, 750, PointMake(0, 1), PointMake(0, 0), _map3);
 	_mapFour = new button;
-	_mapFour->init("map4", 200, 750, PointMake(0, 1), PointMake(0, 0), _map4);
+	_mapFour->init("map4", 380, 750, PointMake(0, 1), PointMake(0, 0), _map4);
 	_mapFive = new button;
-	_mapFive->init("map5", 250, 750, PointMake(0, 1), PointMake(0, 0), _map5);
+	_mapFive->init("map5", 490, 750, PointMake(0, 1), PointMake(0, 0), _map5);
 
 	//저장 버튼( 이 버튼을 눌러야 해당 케이스에 정보가 저장이 됨)
 	_saveButton = new button;
-	_saveButton->init("saveButton", 400, 770, PointMake(0, 1), PointMake(0, 0), _save);
+	_saveButton->init("saveButton", 600, 750, PointMake(0, 1), PointMake(0, 0), _save);
 	//불러오기 버튼
 	_loadButton = new button;
-	_loadButton->init("loadButton", 400, 800, PointMake(0, 1), PointMake(0, 0), _load);
+	_loadButton->init("loadButton", 690, 750, PointMake(0, 1), PointMake(0, 0), _load);
 
+	_tempmapx = _tempmapy = 0;
 	fileNameSet();
+
+	//프레임 돌릴 변수들 초기화
+	_saveFrameCount = 0;
+	_saveFrameImgIndX = 0;
+	_saveFrameImgIdxY = 0;
+	_lifeChargeFramCount = 0;
+	_lifeChargeFrameIndxX = 0;
+	_lifeChargeFrameIndxY = 0;
+	_boxFrameCount = 0;
+	_boxFrameIndX = 0;
+	_boxFrameindY = 0;
+	_lifeCapsuleFrameCount = 0;
+	_lifeCapsuleIndX = 0;
+	_lifeCapsuleIndY = 0;
+
+
 	return S_OK;
 }
 
@@ -164,13 +181,13 @@ void mapTool::update()
 	_objButton->update(WINSIZEX - 250, 490);
 
 	_mapOne->update(50, 750);
-	_mapTwo->update(100, 750);
-	_mapThree->update(150, 750);
-	_mapFour->update(200, 750);
-	_mapFive->update(250, 750);
+	_mapTwo->update(160, 750);
+	_mapThree->update(270, 750);
+	_mapFour->update(380, 750);
+	_mapFive->update(490, 750);
 
-	_saveButton->update(400, 750);
-	_loadButton->update(400, 800);
+	_saveButton->update(600, 750);
+	_loadButton->update(690, 750);
 
 
 	//각도 계산하는 함수
@@ -180,6 +197,56 @@ void mapTool::update()
 
 	//_reSizeX = TILEX;
 	//_reSizeY = TILEY;
+	_tempmapx = (_ptMouse.x - 40) / TILE_SIZE;
+	_tempmapy = (_ptMouse.y - 40) / TILE_SIZE;
+
+	for (int i = 0; i < TILEY; ++i)
+	{
+		for (int j = 0; j < TILEX; ++j)
+		{
+			if ((_vvTile[i][j]->attr & TS_SAVE) == TS_SAVE)
+			{
+				_saveFrameCount++;
+				if (_saveFrameCount % 5 == 0)
+				{
+					_saveFrameImgIdxY = 0;
+					_saveFrameImgIndX++;
+					if(_saveFrameImgIndX > 7)	_saveFrameImgIndX = 0;
+				}
+			}
+			if ((_vvTile[i][j]->attr & TS_LIFE_CHARGE) == TS_LIFE_CHARGE)
+			{
+				_lifeChargeFramCount++;
+				if (_lifeChargeFramCount % 10 == 0)
+				{
+					_lifeChargeFrameIndxY = 0;
+					_lifeChargeFrameIndxX++;
+					if (_lifeChargeFrameIndxX > 1)	_lifeChargeFrameIndxX = 0;
+				}
+			}
+			if ((_vvTile[i][j]->attr & TS_BOX) == TS_BOX)
+			{
+				_boxFrameCount++;
+				if (_boxFrameCount % 7 == 0)
+				{
+					_boxFrameindY = 0;
+					_boxFrameIndX++;
+					if (_boxFrameIndX > 3)	 _boxFrameIndX = 0;
+				}
+			}
+			if ((_vvTile[i][j]->attr & TS_LIFE_CAPSULE) == TS_LIFE_CAPSULE)
+			{
+				_lifeCapsuleFrameCount++;
+				if (_lifeCapsuleFrameCount % 10 == 0)
+				{
+					_lifeCapsuleIndY = 0;
+					_lifeCapsuleIndX++;
+					if(_lifeCapsuleIndX > 1)	_lifeCapsuleIndX = 0;
+				}
+			}
+		}
+	}
+
 }
 
 void mapTool::release()
@@ -243,7 +310,17 @@ void mapTool::render()
 				IMAGEMANAGER->findImage(SAMPLETILENAME[_vvTile[i][j]->tileImgIndex])->frameRender(40 + j * TILE_SIZE, 40 + i * TILE_SIZE
 																								  , _vvTile[i][j]->terrainFrameX
 																								  , _vvTile[i][j]->terrainFrameY);
-
+				//프레임 있는 이미지들 출력
+				if ((_vvTile[i][j]->attr & TS_SAVE) == TS_SAVE)
+					IMAGEMANAGER->findImage("saveFrame")->frameRender(40 + j * TILE_SIZE, 40 + i * TILE_SIZE, _saveFrameImgIndX, _saveFrameImgIdxY);
+				if ((_vvTile[i][j]->attr & TS_LIFE_CHARGE) == TS_LIFE_CHARGE)
+					IMAGEMANAGER->findImage("lifeChargeFrame")->frameRender(40 + j * TILE_SIZE, 40 + i * TILE_SIZE, _lifeChargeFrameIndxX, _lifeChargeFrameIndxY);
+				if ((_vvTile[i][j]->attr & TS_BOX) == TS_BOX)
+					IMAGEMANAGER->findImage("boxFrame")->frameRender(40 + j * TILE_SIZE, 40 + i * TILE_SIZE, _boxFrameIndX, _boxFrameindY);
+				if ((_vvTile[i][j]->attr & TS_LIFE_CAPSULE) == TS_LIFE_CAPSULE)
+					IMAGEMANAGER->findImage("lifeCapsule")->frameRender(40 + j * TILE_SIZE, 40 + i * TILE_SIZE, _lifeCapsuleIndX, _lifeCapsuleIndY);
+				if ((_vvTile[i][j]->attr & TS_FRAME) == TS_FRAME)
+					continue;
 
 				IMAGEMANAGER->findImage(SAMPLETILENAME[_vvTile[i][j]->objImgIndex])->frameRender(40 + j * TILE_SIZE, 40 + i * TILE_SIZE
 																								 , _vvTile[i][j]->objectFrameX
@@ -252,6 +329,8 @@ void mapTool::render()
 			//제트오더 출력
 		}
 	}
+
+
 
 	//맵 그리는 쪽의 렉트를 그림
 	for (int i = 0; i < TILEY; ++i)
@@ -330,22 +409,13 @@ void mapTool::render()
 			D2DMANAGER->drawText(str, 40 + j * TILE_SIZE, 40 + i * TILE_SIZE, 10, RGB(255,255,255));
 		}
 	}
-	/*
-
-	swprintf_s(str, L"saveStartPtY: %d", _pickSampleStartPointY);
-	D2DMANAGER->drawText(str, CAMERA->getPosX() + 130, CAMERA->getPosY() + 630, 25);
-	swprintf_s(str, L"saveEndPtX: %d", _pickSampleEndPointX);
-	D2DMANAGER->drawText(str, CAMERA->getPosX() + 130, CAMERA->getPosY() + 660, 25);
-	swprintf_s(str, L"saveEndPtY: %d", _pickSampleEndPointY);
-	D2DMANAGER->drawText(str, CAMERA->getPosX() + 130, CAMERA->getPosY() + 690, 25);
-
-	swprintf_s(str, L"isClick: %d", _isClick);
-	D2DMANAGER->drawText(str, CAMERA->getPosX() + 130, CAMERA->getPosY() + 720, 25);*/
-
-
+	
+	swprintf_s(str, L"mapX: %d", _tempmapx);
+	D2DMANAGER->drawText(str, CAMERA->getPosX() , CAMERA->getPosY() + 700, 25);
+	swprintf_s(str, L"mapY: %d", _tempmapy);
+	D2DMANAGER->drawText(str, CAMERA->getPosX(), CAMERA->getPosY() + 730, 25);
 
 }
-
 
 //아직 안됨
 //todo
@@ -1322,28 +1392,34 @@ DWORD mapTool::setAttribute(string samplePage, UINT frameX, UINT frameY)
 			storeAttr |= TS_POTAL;
 		break;
 	case 6:
-		/*if((frameX == 0 || frameX == 1) &&(frameY == 3 || frameY == 4))
+		if((frameX == 0 || frameX == 1) &&(frameY == 3 || frameY == 4))
 		{
 			storeAttr |= TS_UNMOVE;
-		}*/
+		}
 		if (frameX == 2 && frameY == 2)
 		{
 			storeAttr |= TS_DOOR;
 			storeAttr |= TS_FRAME;
 		}
-		if (((frameX == 2 && frameX == 3) && frameY == 0) ||
+		if (((frameX == 2 || frameX == 3) && frameY == 0) ||
 			(frameX == 3 && (frameY == 1 || frameY == 2)))
 		{
 			storeAttr |= TS_FRAME;
+			if (frameX == 2 && frameY == 0)
+				storeAttr |= TS_SAVE;
+			if (frameX == 3 && frameY == 0)
+				storeAttr |= TS_LIFE_CHARGE;
+			if (frameX == 3 && frameY == 1)
+				storeAttr |= TS_BOX;
+			if (frameX == 3 && frameY == 2)
+				storeAttr |= TS_LIFE_CAPSULE;
 		}
-
 		break;
 	case 7:
 		if ((frameX >= 0 && frameX < SAMPLE_WIDTH_NUM - 1) && (frameY >= 0 && frameY < 5))
 		{
 			storeAttr |= TS_BACK;
 		}
-
 		break;
 	case 8:
 		if ((frameX >= 0 && frameX < SAMPLE_WIDTH_NUM - 1) && (frameY >= 0 && frameY < 5))
@@ -1500,6 +1576,9 @@ void mapTool::fileNameSet()
 
 	_mapSizeNames.insert(make_pair(MAP_TYPE_FOUR, "data/mapTypeFourMapSize.map"));
 	_mapDataNames.insert(make_pair(MAP_TYPE_FOUR, "data/mapTypeFourMapData.map"));
+
+	_mapSizeNames.insert(make_pair(MAP_TYPE_FIVE, "data/mapTypeFiveMapSize.map"));
+	_mapDataNames.insert(make_pair(MAP_TYPE_FIVE, "data/mapTypeFiveMapData.map"));
 }
 
 

@@ -150,6 +150,29 @@ void image::render(float destX, float destY, int showWidth, int showHeight, floa
 //- Left Top 기준
 //===================================================================
 
+/*
+
+void image::aniRender(int destX, int destY, animation * ani)
+{
+	render(destX, destY, ani->getFramePos().x, ani->getFramePos().y, ani->getFrameWidth(), ani->getFrameHeight());
+}
+
+void image::aniRenderReverseX(int destX, int destY, animation * ani)
+{
+	D2D1_SIZE_F size;
+	size.width = -1;
+	size.height = 1;
+	//D2DMANAGER->_renderTarget->SetTransform(D2D1::Matrix3x2F::Scale(size, Point2F(destX + _imageInfo->frameWidth / 2, destY + _imageInfo->frameHeight / 2)));
+	D2DMANAGER->_renderTarget->SetTransform(D2D1::Matrix3x2F::Scale(size, Point2F(destX - CAMERA->getPosX() + _imageInfo->frameWidth / 2, destY - CAMERA->getPosY() + _imageInfo->frameHeight / 2)));
+	render(destX, destY, ani->getFramePos().x, ani->getFramePos().y, ani->getFrameWidth(), ani->getFrameHeight());
+	D2DMANAGER->_renderTarget->SetTransform(D2D1::Matrix3x2F::Identity());
+}
+*/
+
+
+
+
+
 void image::frameRender(float destX, float destY, int currentFrameX, int currentFrameY, float alpha)
 {
 	frameRender(destX, destY, _imageInfo->frameWidth, _imageInfo->frameHeight, currentFrameX, currentFrameY, alpha);
@@ -213,7 +236,7 @@ void image::frameRenderReverseX(float destX, float destY, int currentFrameX, int
 
 void image::frameRenderReverseX(float destX, float destY, int showWidth, int showHeight, int currentFrameX, int currentFrameY, float alpha)
 {
-
+	//이미지의 left, top
 	POINTFLOAT pf = GetRenderPosition(destX, destY);
 
 	if (_imageInfo->bitmap != NULL)

@@ -4,7 +4,6 @@
 #include "tileNode.h"
 #include <functional>
 
-#define TILE_SIZE			40
 #define BACKGROUND_IDX_NUM	5
 #define BACKGROUND_SIZE		(TILE_SIZE	* BACKGROUND_IDX_NUM)
 
@@ -81,9 +80,6 @@ private:
 	
 	vector<vector<tagTile*>>	_vvTile;
 
-	UINT						_reSizeX;								//맵 사이즈 조정 후 그 사이즈를 저장할 변수
-	UINT						_reSizeY;								//맵 사이즈 조정 후 그 사이즈를 저장할 변수
-
 	tagPickSample				_pickSample;							//선택한 샘플의 인덱스번호를 계산해서 넣어줄 변수
 
 	bool						_isShift;								//shift 키를 누른 상태냐?
@@ -96,10 +92,26 @@ private:
 	UINT						_pickSampleEndPointY;					//sample 범위 선택 할 때 필요한 변수
 
 	//세이브 로드 할때 사용하는 변수임
-	map<MAP_TYPE, string> _mapSizeNames;
-	map<MAP_TYPE, string> _mapDataNames;
-	
-	
+	map<MAP_TYPE, string>	_mapSizeNames;
+	map<MAP_TYPE, string>	_mapDataNames;
+	int						_tempmapx;
+	int						_tempmapy;
+
+	int						_saveFrameCount;				//프레임 이미지들 간격 주는 변수
+	int						_saveFrameImgIndX;				//프레임 번호 X
+	int						_saveFrameImgIdxY;				//프레임 번호 Y
+
+	int						_lifeChargeFramCount;
+	int						_lifeChargeFrameIndxX;
+	int						_lifeChargeFrameIndxY;
+
+	int						_boxFrameCount;
+	int						_boxFrameIndX;
+	int						_boxFrameindY;
+
+	int						_lifeCapsuleFrameCount;
+	int						_lifeCapsuleIndX;
+	int						_lifeCapsuleIndY;
 public:
 	mapTool();
 	~mapTool();

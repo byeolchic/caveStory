@@ -114,6 +114,7 @@ void keyAniManager::addArrayFrameAnimation(string type, string animationKeyName,
 	{
 		typeIter->second.insert(pair<string, animation*>(animationKeyName, ani));
 	}
+	
 }
 
 void keyAniManager::addArrayFrameAnimation(string type, string animationKeyName, const char * imageKeyName, int * arr, int arrLen, int fps, bool loop, void * cbFunction)

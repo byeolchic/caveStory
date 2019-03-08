@@ -1,74 +1,8 @@
-﻿  mapTool.cpp
-c:\users\carin\desktop\바탕화면에 있는 것들\동굴이야기\cavestory\d2d\tilenode.h(24): warning C4005: 'TS_DOOR': 매크로 재정의
-  c:\users\carin\desktop\바탕화면에 있는 것들\동굴이야기\cavestory\d2d\tilenode.h(19): note: 'TS_DOOR'의 이전 정의를 참조하십시오.
-c:\users\carin\desktop\바탕화면에 있는 것들\동굴이야기\cavestory\d2d\tilenode.h(133): warning C4091: 'typedef ': 변수를 선언하지 않으면 'tagTile' 왼쪽은 무시됩니다.
-c:\users\carin\desktop\바탕화면에 있는 것들\동굴이야기\cavestory\d2d\maptool.cpp(193): warning C4244: '인수': 'float'에서 'int'(으)로 변환하면서 데이터가 손실될 수 있습니다.
-c:\users\carin\desktop\바탕화면에 있는 것들\동굴이야기\cavestory\d2d\maptool.cpp(217): warning C4018: '<': signed 또는 unsigned가 일치하지 않습니다.
-c:\users\carin\desktop\바탕화면에 있는 것들\동굴이야기\cavestory\d2d\maptool.cpp(219): warning C4018: '<': signed 또는 unsigned가 일치하지 않습니다.
-c:\users\carin\desktop\바탕화면에 있는 것들\동굴이야기\cavestory\d2d\maptool.cpp(233): warning C4244: '인수': 'int'에서 'float'(으)로 변환하면서 데이터가 손실될 수 있습니다.
-c:\users\carin\desktop\바탕화면에 있는 것들\동굴이야기\cavestory\d2d\maptool.cpp(237): warning C4244: '인수': 'int'에서 'float'(으)로 변환하면서 데이터가 손실될 수 있습니다.
-c:\users\carin\desktop\바탕화면에 있는 것들\동굴이야기\cavestory\d2d\maptool.cpp(243): warning C4244: '인수': 'int'에서 'float'(으)로 변환하면서 데이터가 손실될 수 있습니다.
-c:\users\carin\desktop\바탕화면에 있는 것들\동굴이야기\cavestory\d2d\maptool.cpp(248): warning C4244: '인수': 'int'에서 'float'(으)로 변환하면서 데이터가 손실될 수 있습니다.
-c:\users\carin\desktop\바탕화면에 있는 것들\동굴이야기\cavestory\d2d\maptool.cpp(257): warning C4018: '<': signed 또는 unsigned가 일치하지 않습니다.
-c:\users\carin\desktop\바탕화면에 있는 것들\동굴이야기\cavestory\d2d\maptool.cpp(259): warning C4018: '<': signed 또는 unsigned가 일치하지 않습니다.
-c:\users\carin\desktop\바탕화면에 있는 것들\동굴이야기\cavestory\d2d\maptool.cpp(273): warning C4244: '인수': 'int'에서 'float'(으)로 변환하면서 데이터가 손실될 수 있습니다.
-c:\users\carin\desktop\바탕화면에 있는 것들\동굴이야기\cavestory\d2d\maptool.cpp(272): warning C4244: '인수': 'int'에서 'float'(으)로 변환하면서 데이터가 손실될 수 있습니다.
-c:\users\carin\desktop\바탕화면에 있는 것들\동굴이야기\cavestory\d2d\maptool.cpp(315): warning C4018: '<': signed 또는 unsigned가 일치하지 않습니다.
-c:\users\carin\desktop\바탕화면에 있는 것들\동굴이야기\cavestory\d2d\maptool.cpp(317): warning C4018: '<': signed 또는 unsigned가 일치하지 않습니다.
-c:\users\carin\desktop\바탕화면에 있는 것들\동굴이야기\cavestory\d2d\maptool.cpp(330): warning C4244: '인수': 'int'에서 'float'(으)로 변환하면서 데이터가 손실될 수 있습니다.
-c:\users\carin\desktop\바탕화면에 있는 것들\동굴이야기\cavestory\d2d\maptool.cpp(440): warning C4018: '<': signed 또는 unsigned가 일치하지 않습니다.
-c:\users\carin\desktop\바탕화면에 있는 것들\동굴이야기\cavestory\d2d\maptool.cpp(443): warning C4018: '<': signed 또는 unsigned가 일치하지 않습니다.
-c:\users\carin\desktop\바탕화면에 있는 것들\동굴이야기\cavestory\d2d\maptool.cpp(486): warning C4018: '<': signed 또는 unsigned가 일치하지 않습니다.
-c:\users\carin\desktop\바탕화면에 있는 것들\동굴이야기\cavestory\d2d\maptool.cpp(489): warning C4018: '<': signed 또는 unsigned가 일치하지 않습니다.
-c:\users\carin\desktop\바탕화면에 있는 것들\동굴이야기\cavestory\d2d\maptool.cpp(533): warning C4018: '<': signed 또는 unsigned가 일치하지 않습니다.
-c:\users\carin\desktop\바탕화면에 있는 것들\동굴이야기\cavestory\d2d\maptool.cpp(536): warning C4018: '<': signed 또는 unsigned가 일치하지 않습니다.
-c:\users\carin\desktop\바탕화면에 있는 것들\동굴이야기\cavestory\d2d\maptool.cpp(579): warning C4018: '<': signed 또는 unsigned가 일치하지 않습니다.
-c:\users\carin\desktop\바탕화면에 있는 것들\동굴이야기\cavestory\d2d\maptool.cpp(582): warning C4018: '<': signed 또는 unsigned가 일치하지 않습니다.
-c:\users\carin\desktop\바탕화면에 있는 것들\동굴이야기\cavestory\d2d\maptool.cpp(625): warning C4018: '<': signed 또는 unsigned가 일치하지 않습니다.
-c:\users\carin\desktop\바탕화면에 있는 것들\동굴이야기\cavestory\d2d\maptool.cpp(628): warning C4018: '<': signed 또는 unsigned가 일치하지 않습니다.
-c:\users\carin\desktop\바탕화면에 있는 것들\동굴이야기\cavestory\d2d\maptool.cpp(702): warning C4244: '초기화 중': 'FLOAT'에서 'int'(으)로 변환하면서 데이터가 손실될 수 있습니다.
-c:\users\carin\desktop\바탕화면에 있는 것들\동굴이야기\cavestory\d2d\maptool.cpp(703): warning C4244: '초기화 중': 'FLOAT'에서 'int'(으)로 변환하면서 데이터가 손실될 수 있습니다.
-c:\users\carin\desktop\바탕화면에 있는 것들\동굴이야기\cavestory\d2d\maptool.cpp(835): warning C4552: '+': 식의 결과가 사용되지 않습니다.
-c:\users\carin\desktop\바탕화면에 있는 것들\동굴이야기\cavestory\d2d\maptool.cpp(837): warning C4552: '+': 식의 결과가 사용되지 않습니다.
-c:\users\carin\desktop\바탕화면에 있는 것들\동굴이야기\cavestory\d2d\maptool.cpp(864): warning C4018: '<': signed 또는 unsigned가 일치하지 않습니다.
-c:\users\carin\desktop\바탕화면에 있는 것들\동굴이야기\cavestory\d2d\maptool.cpp(866): warning C4018: '<': signed 또는 unsigned가 일치하지 않습니다.
-c:\users\carin\desktop\바탕화면에 있는 것들\동굴이야기\cavestory\d2d\maptool.cpp(887): warning C4018: '<': signed 또는 unsigned가 일치하지 않습니다.
-c:\users\carin\desktop\바탕화면에 있는 것들\동굴이야기\cavestory\d2d\maptool.cpp(889): warning C4018: '<': signed 또는 unsigned가 일치하지 않습니다.
-c:\users\carin\desktop\바탕화면에 있는 것들\동굴이야기\cavestory\d2d\maptool.cpp(896): warning C4018: '<': signed 또는 unsigned가 일치하지 않습니다.
-c:\users\carin\desktop\바탕화면에 있는 것들\동굴이야기\cavestory\d2d\maptool.cpp(898): warning C4018: '<': signed 또는 unsigned가 일치하지 않습니다.
-c:\users\carin\desktop\바탕화면에 있는 것들\동굴이야기\cavestory\d2d\maptool.cpp(916): warning C4018: '<': signed 또는 unsigned가 일치하지 않습니다.
-c:\users\carin\desktop\바탕화면에 있는 것들\동굴이야기\cavestory\d2d\maptool.cpp(918): warning C4018: '<': signed 또는 unsigned가 일치하지 않습니다.
-c:\users\carin\desktop\바탕화면에 있는 것들\동굴이야기\cavestory\d2d\maptool.cpp(925): warning C4018: '<': signed 또는 unsigned가 일치하지 않습니다.
-c:\users\carin\desktop\바탕화면에 있는 것들\동굴이야기\cavestory\d2d\maptool.cpp(927): warning C4018: '<': signed 또는 unsigned가 일치하지 않습니다.
-c:\users\carin\desktop\바탕화면에 있는 것들\동굴이야기\cavestory\d2d\maptool.cpp(945): warning C4018: '<': signed 또는 unsigned가 일치하지 않습니다.
-c:\users\carin\desktop\바탕화면에 있는 것들\동굴이야기\cavestory\d2d\maptool.cpp(947): warning C4018: '<': signed 또는 unsigned가 일치하지 않습니다.
-c:\users\carin\desktop\바탕화면에 있는 것들\동굴이야기\cavestory\d2d\maptool.cpp(954): warning C4018: '<': signed 또는 unsigned가 일치하지 않습니다.
-c:\users\carin\desktop\바탕화면에 있는 것들\동굴이야기\cavestory\d2d\maptool.cpp(956): warning C4018: '<': signed 또는 unsigned가 일치하지 않습니다.
-c:\users\carin\desktop\바탕화면에 있는 것들\동굴이야기\cavestory\d2d\maptool.cpp(1012): warning C4267: '인수': 'size_t'에서 'DWORD'(으)로 변환하면서 데이터가 손실될 수 있습니다.
-c:\users\carin\desktop\바탕화면에 있는 것들\동굴이야기\cavestory\d2d\maptool.cpp(1017): warning C4018: '<': signed 또는 unsigned가 일치하지 않습니다.
-c:\users\carin\desktop\바탕화면에 있는 것들\동굴이야기\cavestory\d2d\maptool.cpp(1019): warning C4018: '<': signed 또는 unsigned가 일치하지 않습니다.
-c:\users\carin\desktop\바탕화면에 있는 것들\동굴이야기\cavestory\d2d\maptool.cpp(1107): warning C4101: 'write2' :참조되지 않은 지역 변수입니다.
-c:\users\carin\desktop\바탕화면에 있는 것들\동굴이야기\cavestory\d2d\maptool.cpp(1173): warning C4018: '<': signed 또는 unsigned가 일치하지 않습니다.
-c:\users\carin\desktop\바탕화면에 있는 것들\동굴이야기\cavestory\d2d\maptool.cpp(1190): warning C4018: '<': signed 또는 unsigned가 일치하지 않습니다.
-c:\users\carin\desktop\바탕화면에 있는 것들\동굴이야기\cavestory\d2d\maptool.cpp(1192): warning C4018: '<': signed 또는 unsigned가 일치하지 않습니다.
-c:\users\carin\desktop\바탕화면에 있는 것들\동굴이야기\cavestory\d2d\maptool.cpp(1284): warning C4553: '==': 식의 결과가 사용되지 않습니다. '='을(를) 의도했습니까?
-c:\users\carin\desktop\바탕화면에 있는 것들\동굴이야기\cavestory\d2d\maptool.cpp(1370): warning C4018: '<': signed 또는 unsigned가 일치하지 않습니다.
-c:\users\carin\desktop\바탕화면에 있는 것들\동굴이야기\cavestory\d2d\maptool.cpp(1396): warning C4018: '<': signed 또는 unsigned가 일치하지 않습니다.
-c:\users\carin\desktop\바탕화면에 있는 것들\동굴이야기\cavestory\d2d\maptool.cpp(1427): warning C4018: '<': signed 또는 unsigned가 일치하지 않습니다.
-  mapToolScene.cpp
-c:\users\carin\desktop\바탕화면에 있는 것들\동굴이야기\cavestory\d2d\tilenode.h(24): warning C4005: 'TS_DOOR': 매크로 재정의
-  c:\users\carin\desktop\바탕화면에 있는 것들\동굴이야기\cavestory\d2d\tilenode.h(19): note: 'TS_DOOR'의 이전 정의를 참조하십시오.
-c:\users\carin\desktop\바탕화면에 있는 것들\동굴이야기\cavestory\d2d\tilenode.h(133): warning C4091: 'typedef ': 변수를 선언하지 않으면 'tagTile' 왼쪽은 무시됩니다.
-  playGround.cpp
-c:\users\carin\desktop\바탕화면에 있는 것들\동굴이야기\cavestory\d2d\tilenode.h(24): warning C4005: 'TS_DOOR': 매크로 재정의
-  c:\users\carin\desktop\바탕화면에 있는 것들\동굴이야기\cavestory\d2d\tilenode.h(19): note: 'TS_DOOR'의 이전 정의를 참조하십시오.
-c:\users\carin\desktop\바탕화면에 있는 것들\동굴이야기\cavestory\d2d\tilenode.h(133): warning C4091: 'typedef ': 변수를 선언하지 않으면 'tagTile' 왼쪽은 무시됩니다.
-c:\users\carin\desktop\바탕화면에 있는 것들\동굴이야기\cavestory\d2d\playground.cpp(70): warning C4477: 'swprintf_s' : 서식 문자열 '%d'에 'int' 형식의 인수가 필요하지만 variadic 인수 1의 형식이 'double'입니다.
-c:\users\carin\desktop\바탕화면에 있는 것들\동굴이야기\cavestory\d2d\playground.cpp(72): warning C4477: 'swprintf_s' : 서식 문자열 '%d'에 'int' 형식의 인수가 필요하지만 variadic 인수 1의 형식이 'double'입니다.
-  windowsAPI.cpp
-c:\users\carin\desktop\바탕화면에 있는 것들\동굴이야기\cavestory\d2d\tilenode.h(24): warning C4005: 'TS_DOOR': 매크로 재정의
-  c:\users\carin\desktop\바탕화면에 있는 것들\동굴이야기\cavestory\d2d\tilenode.h(19): note: 'TS_DOOR'의 이전 정의를 참조하십시오.
-c:\users\carin\desktop\바탕화면에 있는 것들\동굴이야기\cavestory\d2d\tilenode.h(133): warning C4091: 'typedef ': 변수를 선언하지 않으면 'tagTile' 왼쪽은 무시됩니다.
-c:\users\carin\desktop\바탕화면에 있는 것들\동굴이야기\cavestory\d2d\windowsapi.cpp(85): warning C4244: 'return': 'WPARAM'에서 'int'(으)로 변환하면서 데이터가 손실될 수 있습니다.
-  코드를 생성하고 있습니다...
+﻿  player.cpp
+c:\users\carin\desktop\바탕화면에 있는 것들\동굴이야기\cavestory\d2d\tilenode.h(25): warning C4005: 'TS_DOOR': 매크로 재정의
+  c:\users\carin\desktop\바탕화면에 있는 것들\동굴이야기\cavestory\d2d\tilenode.h(20): note: 'TS_DOOR'의 이전 정의를 참조하십시오.
+c:\users\carin\desktop\바탕화면에 있는 것들\동굴이야기\cavestory\d2d\tilenode.h(136): warning C4091: 'typedef ': 변수를 선언하지 않으면 'tagTile' 왼쪽은 무시됩니다.
+c:\users\carin\desktop\바탕화면에 있는 것들\동굴이야기\cavestory\d2d\player.cpp(60): warning C4244: '인수': 'FLOAT'에서 'int'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+c:\users\carin\desktop\바탕화면에 있는 것들\동굴이야기\cavestory\d2d\player.cpp(64): warning C4244: '인수': 'FLOAT'에서 'int'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+c:\users\carin\desktop\바탕화면에 있는 것들\동굴이야기\cavestory\d2d\player.cpp(67): warning C4244: '인수': 'FLOAT'에서 'int'(으)로 변환하면서 데이터가 손실될 수 있습니다.
   windowsAPI.vcxproj -> C:\Users\carin\Desktop\바탕화면에 있는 것들\동굴이야기\caveStory\d2d\x64\Debug\windowsAPI.exe

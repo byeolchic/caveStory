@@ -14,13 +14,36 @@ HRESULT playGround::init()
 {
 	gameNode::init(true);
 
+	IMAGEMANAGER->addFrameImage("boxFrame", L"image/frameImg/boxFrame.png", 160, 40, 4, 1);
+	IMAGEMANAGER->addFrameImage("doorFrame", L"image/frameImg/doorFrame.png", 160, 80, 4, 1);
+	IMAGEMANAGER->addFrameImage("lifeCapsule", L"image/frameImg/lifeCapsule.png", 80, 40, 2, 1);
+	IMAGEMANAGER->addFrameImage("lifeChargeFrame", L"image/frameImg/lifeChargeFrame.png", 80, 40, 2, 1);
+
+	IMAGEMANAGER->addFrameImage("saveFrame", L"image/frameImg/saveFrame.png", 320, 40, 8, 1);
+	IMAGEMANAGER->addFrameImage("lifeChargeFrame", L"image/frameImg/lifeChargeFrame.png", 80, 40, 2, 1);
+	IMAGEMANAGER->addFrameImage("boxFrame", L"image/frameImg/boxFrame.png", 160, 40, 4, 1);
+	IMAGEMANAGER->addFrameImage("lifeCapsule", L"image/frameImg/lifeCapsule.png", 80, 40, 2, 1);
+
 	SCENEMANAGER->addScene("mapToolScene", new mapToolScene);
+	SCENEMANAGER->addScene("townScene", new townScene);
+	SCENEMANAGER->addScene("playerTestScene", new playerTestScene);
+
 	SCENEMANAGER->changeScene("mapToolScene");
+	
 
 	_count = 0;
 
 	_cursor1 = LoadCursorFromFile("cute1.cur");
 	_cursor2 = LoadCursorFromFile("cute2.cur");
+	
+	if (MAPTOOLSCENE)
+	{
+		SCENEMANAGER->changeScene("mapToolScene");
+	}
+	else
+	{
+		SCENEMANAGER->changeScene("townScene");
+	}
 
 	
 

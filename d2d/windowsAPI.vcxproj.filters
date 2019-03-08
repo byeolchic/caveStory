@@ -61,6 +61,27 @@
     <Filter Include="PlayGround\mapToolScene">
       <UniqueIdentifier>{9f6149b7-cf33-4547-875b-669d33260880}</UniqueIdentifier>
     </Filter>
+    <Filter Include="PlayGround\player">
+      <UniqueIdentifier>{527b1da3-f6f1-42ee-b413-05a3fdd65666}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="PlayGround\map">
+      <UniqueIdentifier>{f6b209c5-7b58-408c-a1fa-f89e9b372a81}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="PlayGround\map\boss map">
+      <UniqueIdentifier>{d0f2ad3d-9d1f-462e-a73b-fa7f28830480}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="PlayGround\map\cemetry Map">
+      <UniqueIdentifier>{5e01647a-cf10-4d4d-ad32-45271fe6a614}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="PlayGround\map\store Zone Map">
+      <UniqueIdentifier>{1ac2260f-d0a2-4eea-8a52-5add506637e1}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="PlayGround\map\town Map">
+      <UniqueIdentifier>{f1284a75-5c9f-4b2d-b0bf-527c54ac7270}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="PlayGround\mapScene">
+      <UniqueIdentifier>{9e17fdc1-2f63-46cc-851e-687e1f2f29c6}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="stdafx.h">
@@ -153,6 +174,30 @@
     <ClInclude Include="mapToolScene.h">
       <Filter>PlayGround\mapToolScene</Filter>
     </ClInclude>
+    <ClInclude Include="player.h">
+      <Filter>PlayGround\player</Filter>
+    </ClInclude>
+    <ClInclude Include="mapData.h">
+      <Filter>PlayGround\map</Filter>
+    </ClInclude>
+    <ClInclude Include="bossMap.h">
+      <Filter>PlayGround\map\boss map</Filter>
+    </ClInclude>
+    <ClInclude Include="cemetryMap.h">
+      <Filter>PlayGround\map\cemetry Map</Filter>
+    </ClInclude>
+    <ClInclude Include="storeZoneMap.h">
+      <Filter>PlayGround\map\store Zone Map</Filter>
+    </ClInclude>
+    <ClInclude Include="townMap.h">
+      <Filter>PlayGround\map\town Map</Filter>
+    </ClInclude>
+    <ClInclude Include="townScene.h">
+      <Filter>PlayGround\mapScene</Filter>
+    </ClInclude>
+    <ClInclude Include="playerTestScene.h">
+      <Filter>PlayGround\player</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp">
@@ -229,6 +274,30 @@
     </ClCompile>
     <ClCompile Include="mapToolScene.cpp">
       <Filter>PlayGround\mapToolScene</Filter>
+    </ClCompile>
+    <ClCompile Include="player.cpp">
+      <Filter>PlayGround\player</Filter>
+    </ClCompile>
+    <ClCompile Include="mapData.cpp">
+      <Filter>PlayGround\map</Filter>
+    </ClCompile>
+    <ClCompile Include="bossMap.cpp">
+      <Filter>PlayGround\map\boss map</Filter>
+    </ClCompile>
+    <ClCompile Include="cemetryMap.cpp">
+      <Filter>PlayGround\map\cemetry Map</Filter>
+    </ClCompile>
+    <ClCompile Include="storeZoneMap.cpp">
+      <Filter>PlayGround\map\store Zone Map</Filter>
+    </ClCompile>
+    <ClCompile Include="townMap.cpp">
+      <Filter>PlayGround\map\town Map</Filter>
+    </ClCompile>
+    <ClCompile Include="townScene.cpp">
+      <Filter>PlayGround\mapScene</Filter>
+    </ClCompile>
+    <ClCompile Include="playerTestScene.cpp">
+      <Filter>PlayGround\player</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

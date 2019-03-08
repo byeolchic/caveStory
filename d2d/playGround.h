@@ -1,6 +1,9 @@
 #pragma once
 #include "gameNode.h"
 #include "mapToolScene.h"
+#include "townScene.h"
+#include "playerTestScene.h"
+
 
 
 class playGround : public gameNode
