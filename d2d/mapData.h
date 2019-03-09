@@ -52,6 +52,7 @@ protected:
 public:
 	mapData();
 	~mapData();
+	virtual HRESULT init();
 	virtual HRESULT init(const char * mapSizeFileName, const char * mapFileName);
 	virtual void release();
 	virtual void update();
@@ -60,6 +61,8 @@ public:
 	void frameUpdate();
 	void load(const char * mapSizeFileName, const char * mapFileName);
 	virtual void portalLoad();
+	
+	tagTile* getTile(UINT x, UINT y) { return _vvTile[x][y]; }
 
 	//¸µÅ©
 	virtual void setPlayerMemoryAdressLink(player* p) { _player = p; }

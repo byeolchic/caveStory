@@ -12,7 +12,32 @@ mapData::mapData()
 mapData::~mapData()
 {
 }
+HRESULT mapData::init()
+{
+	//_player = new player;
+	//_player->init();
+	////_player->setMapDataMemoryAdressLink()
+	_rangeStartX = _rangeStartY = _rangeMaxX = _rangeMaxY = 0;
+	//load(mapSizeFileName, mapFileName);
+	_portal.clear();
 
+	_saveFrameCount = 0;
+	_saveFrameImgIndX = 0;
+	_saveFrameImgIdxY = 0;
+
+	_lifeChargeFramCount = 0;
+	_lifeChargeFrameIndxX = 0;
+	_lifeChargeFrameIndxY = 0;
+
+	_boxFrameCount = 0;
+	_boxFrameIndX = 0;
+	_boxFrameindY = 0;
+
+	_lifeCapsuleFrameCount = 0;
+	_lifeCapsuleIndX = 0;
+	_lifeCapsuleIndY = 0;
+	return S_OK;
+}
 HRESULT mapData::init(const char * mapSizeFileName, const char * mapFileName)
 {
 	//_player = new player;
