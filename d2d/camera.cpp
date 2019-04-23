@@ -67,6 +67,15 @@ void camera::move(float x, float y)
 {
 	_posX = x - WINSIZEX / 2;
 	_posY = y - WINSIZEY / 2;
+	if (_posX < 0)
+	{
+		_posX = 0;
+	}
+	if (_posY < 0)
+	{
+		_posY = 0;
+	}
+	
 }
 
 void camera::mapToolMove()

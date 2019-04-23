@@ -45,6 +45,7 @@ struct tagPickSample
 	UINT tileImgPage;
 	int indX;
 	int indY;
+	float angle;
 };
 
 
@@ -70,7 +71,8 @@ private:
 	button*		_saveButton;
 	button*		_loadButton;
 	
-	POINTF						_pt;									//각도 계산하는 용도의 _pt
+	POINTF						_pt1;									//각도 계산하는 용도의 _pt
+	POINTF						_pt2;									//각도 계산하는 용도의 _pt
 	float						_getAngleF;								//계산된 각도 저장하는 변수
 	int							_calculateNum;							//각도 계산할때 첫번째 클릭, 두번째 클릭 구분할 int 변수
 	D2D1_RECT_F					_loopRect;								//루프 렌더 할 때 필요한 렉트

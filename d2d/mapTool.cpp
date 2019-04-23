@@ -77,6 +77,7 @@ HRESULT mapTool::init()
 	_pickSample.indX = 0;
 	_pickSample.indY = 0;
 	_pickSample.tileImgPage = 1;
+	_pickSample.angle = 0.f;
 
 	//루프렌더용
 	_loopRect = { 0, 0, 1120, 840 };
@@ -87,8 +88,10 @@ HRESULT mapTool::init()
 	_boolCountX = _boolCountY = 0;
 
 	//타일의 각도 계산할때 필요한 변수들
-	_pt.x = 0.f;
-	_pt.y = 0.f;
+	_pt1.x = 0.f;
+	_pt1.y = 0.f;
+	_pt2.x = 0.f;
+	_pt2.y = 0.f;
 	_getAngleF = 0.f;
 	_calculateNum = 0;
 
@@ -371,6 +374,10 @@ void mapTool::render()
 		IMAGEMANAGER->findImage(SAMPLETILENAME[_pickSample.tileImgPage])->frameRender(_ptMouse.x + 20, _ptMouse.y + 20, _pickSample.indX, _pickSample.indY, 0.5f);
 	}
 	WCHAR str[128];
+	swprintf_s(str, L"angle : %d", _pickSample.angle);
+	D2DMANAGER->drawText(str, CAMERA->getPosX(), CAMERA->getPosY() + 450, 25);
+
+
 	swprintf_s(str, L"mapType : %d", _mapType);
 	D2DMANAGER->drawText(str, CAMERA->getPosX(), CAMERA->getPosY() + 500, 25);
 	swprintf_s(str, L"select X축 : %d", _isSelectX);
@@ -423,17 +430,18 @@ void mapTool::calculateAngle()
 {
 	if (KEYMANAGER->isStayKeyDown(VK_CONTROL))
 	{
-		if (KEYMANAGER->isOnceKeyDown(VK_LBUTTON))
+		if (KEYMANAGER->isOnceKeyDown(VK_RBUTTON))
 		{
 			if (_calculateNum % 2 == 0)
 			{
-				_pt.x = _ptMouse.x;
-				_pt.y = _ptMouse.y;
+				_pt1.x = _ptMouse.x;
+				_pt1.y = _ptMouse.y;
 			}
 			if (_calculateNum % 2 == 1)
 			{
-
-				_getAngleF = getAngle(_pt.x, _pt.y, _ptMouse.x, _ptMouse.y) * (180 / PI);
+				_pt2.x = _ptMouse.x;
+				_pt2.y = _ptMouse.y;
+				_pickSample.angle = getAngle(_pt1.x, _pt1.y, _pt2.x, _pt2.y) * (180 / PI);
 			}
 			++_calculateNum;
 		}
@@ -747,6 +755,8 @@ void mapTool::mapToolSetting()
 			tile->zOrderFrameX = NULL;
 			tile->zOrderFrameY = NULL;
 			tile->attr = TS_NONE;
+
+			//tile->angle = 0.f;
 			tile->isBackground = false;
 			tile->isObj = false;
 			tile->isZorder = false;
@@ -804,9 +814,21 @@ void mapTool::pickSample()
 			if ((frameX >= 0 && frameX < SAMPLE_WIDTH_NUM) && (frameY >= 0 && frameY < SAMPLE_HEIGHT_NUM))
 			{
 				if (_samplePage == 2)
+				{
 					_pickSample.tileImgPage = SAMPLE_TILE_IMAGEKEY_02;
+					if ((frameX >= 2 && frameX < SAMPLE_WIDTH_NUM) && (frameY == 0 || frameY == 2))
+					{
+						calculateAngle();
+					}
+				}
 				else if (_samplePage == 3)
+				{
 					_pickSample.tileImgPage = SAMPLE_TILE_IMAGEKEY_03;
+					if ((frameX == 1 || frameX == 2 || frameX == 4 || frameX == 5) && (frameY == 6 || frameY == 7 || frameY == 8))
+					{
+						calculateAngle();
+					}
+				}
 				else if (_samplePage == 4)
 					_pickSample.tileImgPage = SAMPLE_TILE_IMAGEKEY_04;
 
@@ -1039,30 +1061,7 @@ void mapTool::drawMap()
 					}
 				}
 			}
-			//일반 타일
-			//for (int i = 0; i < TILEY; ++i)
-			//{
-			//	for (int j = 0; j < TILEX; ++j)
-			//	{
-			//		if (_ptMouse.x > (j + 1) * TILE_SIZE && _ptMouse.x < (j + 2) * TILE_SIZE
-			//			&& _ptMouse.y >(i + 1) * TILE_SIZE && _ptMouse.y < (i + 2) * TILE_SIZE)
-			//		{
-			//			int drawAreaX = 0;
-			//			int drawAreaY = 0;
-			//			for (int ii = _pickSampleStartPointY; ii < _pickSampleEndPointY; ii++, drawAreaY++)
-			//			{
-			//				for (int jj = _pickSampleStartPointX; jj < _pickSampleEndPointX; jj++, drawAreaX++)
-			//				{
-			//					_vvTile[i + drawAreaY][j + drawAreaX]->tileImgIndex = _pickSample.tileImgPage;
-			//					_vvTile[i + drawAreaY][j + drawAreaX]->terrainFrameX = _pickSample.indX + drawAreaX;
-			//					_vvTile[i + drawAreaY][j + drawAreaX]->terrainFrameY = _pickSample.indY + drawAreaY;
-			//				}
-			//				drawAreaX = 0;
-			//					
-			//			}
-			//		}
-			//	}
-			//}
+			
 		}
 		
 	}
@@ -1092,87 +1091,6 @@ void mapTool::save()
 			}
 		}
 
-		/*
-	for (int i = 0; i < TILEY; ++i)
-	{
-		for (int j = 0; j < TILEX; ++j)
-		{
-			tile[j + i * TILEX] = *_vvTile[i][j];
-
-			//마을맵의 포탈 정보 입력
-			if (mapCase == 1)		//마을의 포탈
-			{
-				//필드로 가는 포탈
-				_vvTile[8][7]->attr |= ATTR_POTAL;
-				_vvTile[9][7]->attr |= ATTR_POTAL;
-				_vvTile[10][7]->attr |= ATTR_POTAL;
-
-				//집으로 가는 포탈
-				_vvTile[15][23]->attr |= ATTR_POTAL;
-
-				//오박사 실험실 포탈
-				_vvTile[16][36]->attr |= ATTR_POTAL;
-
-				//상점으로 이동하는 포탈
-				_vvTile[26][38]->attr |= ATTR_POTAL;
-
-				//센터로 이동하는 포탈
-				_vvTile[26][33]->attr |= ATTR_POTAL;
-
-				//체육관으로 이동하는 포탈
-				_vvTile[26][26]->attr |= ATTR_POTAL;
-
-			}
-			//플레이어 집의 포탈 정보 입력
-			if (mapCase == 2)
-			{
-				//마을로 이동하는 포탈
-				_vvTile[15][15]->attr |= ATTR_POTAL;
-			}
-			//오박사 연구소의 포탈정보 입력
-			if (mapCase == 3)
-			{
-				//마을로 이동하는 포탈
-				_vvTile[21][16]->attr |= ATTR_POTAL;
-			}
-			//상점의 포탈정보 입력
-			if (mapCase == 4)
-			{
-				//마을로 이동하는 포탈
-				_vvTile[14][14]->attr |= ATTR_POTAL;
-			}
-			//포켓몬센터의 포탈정보 입력
-			if (mapCase == 5)
-			{
-				//마을로 이동하는 포탈
-				_vvTile[15][17]->attr |= ATTR_POTAL;
-			}
-			//체육관의 포탈정보 입력
-			if (mapCase == 6)
-			{
-				//마을로 이동하는 포탈
-				_vvTile[21][16]->attr |= ATTR_POTAL;
-			}
-			//필드의 포탈정보 입력
-			if (mapCase == 7)
-			{
-				//마을로 이동하는 포탈
-				_vvTile[42][47]->attr |= ATTR_POTAL;
-				_vvTile[42][48]->attr |= ATTR_POTAL;
-				_vvTile[42][49]->attr |= ATTR_POTAL;
-				_vvTile[42][50]->attr |= ATTR_POTAL;
-				//동굴로 이동하는 포탈
-				_vvTile[15][52]->attr |= ATTR_POTAL;
-			}
-			//동굴의 포탈정보 입력
-			if (mapCase == 8)
-			{
-				//필드로 가는 포탈
-				_vvTile[40][31]->attr |= ATTR_POTAL;
-			}
-		}
-	}
-	*/
 		HANDLE file2;
 		DWORD write2;
 		file2 = CreateFile(_mapDataNames[(MAP_TYPE)_mapType].c_str(), GENERIC_WRITE, NULL, NULL, CREATE_ALWAYS, FILE_ATTRIBUTE_NORMAL, NULL);
@@ -1187,9 +1105,6 @@ void mapTool::save()
 
 void mapTool::load()
 {
-	//if (!sizeFileExists(_mapSizeNames) && !dataFileExists(_mapDataNames))
-	//	return;
-
 	for (int i = TILEY - 1; i >= 0; i--)
 	{
 		for (int j = TILEX - 1; j >= 0; j--)
@@ -1318,7 +1233,7 @@ DWORD mapTool::setAttribute(string samplePage, UINT frameX, UINT frameY)
 		}
 		break;
 	case 2:
-		if ((frameX == 0 || frameX == 1) && (frameY >= 0 && frameY < 3) ||
+		if (((frameX == 0 || frameX == 1) && (frameY >= 0 && frameY < 3)) ||
 			(frameX == SAMPLE_WIDTH_NUM - 1 && frameY == 3) ||
 			((frameX >= 1 && frameX < 4) && frameY == 8))
 		{
@@ -1345,13 +1260,15 @@ DWORD mapTool::setAttribute(string samplePage, UINT frameX, UINT frameY)
 		}
 		break;
 	case 3:
+		if ((frameX >= 2 && frameX < SAMPLE_WIDTH_NUM) && (frameY == 2 || frameY == 3))
+			storeAttr |= TS_NONE;
 		if (frameX == 0 && frameY == 0)
 		{
 			storeAttr |= TS_UNMOVE;
 		}
 		if ((frameX == SAMPLE_WIDTH_NUM - 2 || frameX == SAMPLE_WIDTH_NUM - 1) && frameY == 1)
 		{
-			storeAttr == TS_DIALOGUE;
+			storeAttr |= TS_DIALOGUE;
 		}
 		if ((frameX == 1 || frameX == 2 || frameX == 4 || frameX == 5) && (frameY >= 6 && frameY <= 8))
 		{
@@ -1489,6 +1406,7 @@ void mapTool::decreaseX()
 		newTile->zOrderFrameY = NULL;
 		newTile->attr = TS_NONE;
 
+		//newTile->angle = 0.f;
 		newTile->isBackground = false;
 		newTile->isObj = false;
 		newTile->isZorder = false;
@@ -1520,6 +1438,7 @@ void mapTool::decreaseY()
 		newTile->zOrderFrameY = NULL;
 		newTile->attr = TS_NONE;
 		
+		//newTile->angle = 0.f;
 		newTile->isBackground = false;
 		newTile->isObj = false;
 		newTile->isZorder = false;

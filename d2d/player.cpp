@@ -17,26 +17,44 @@ HRESULT player::init()
 
 	//세분화한 플레이어의 상태 변수
 	_playerState = IDLE;
-	_prePlayerState = IDLE;
+	//_prePlayerState = IDLE;
 
 	_playerDir = RIGHT;
-	_prePlayerDir = RIGHT;
+	//_prePlayerDir = RIGHT;
 	
 	_jumpState = JUMP_RISE;
 
 	_tileX = 20;
-	_tileY = 13;
-	_centerX = _tileX * 40;
-	_centerY = _tileY * 40 ;
+	_tileY = 8;
+	_plLeft = _tileX * TILE_SIZE + ((TILE_SIZE - PLAYER_WIDTH) / 2);
+	_plTop = _tileY * TILE_SIZE + ((TILE_SIZE - PLAYER_HEIGHT)/ 2);
 	
-	_playerRC = { (float)_centerX 
-				,(float)_centerY
-				,(float)(_centerX + PLAYER_WIDTH)
-				,(float)(_centerY + PLAYER_HEIGHT)};
-
-	_jumpPower = 0;
+	_playerRC = { (float)_plLeft
+				, (float)_plTop
+				, (float)_plLeft + (PLAYER_WIDTH)
+				, (float)_plTop + (PLAYER_HEIGHT) };
+	//타일 검사할 때 사용할 rect
+	_probeRcLeft = { (float)_playerRC.left - TILE_SIZE
+					,(float)_playerRC.bottom - TILE_SIZE
+					,(float)_playerRC.left
+					,(float)_playerRC.bottom };
+	_probeRcTop = { (float)_playerRC.left
+					,(float)_playerRC.top - TILE_SIZE
+					,(float)_playerRC.left + TILE_SIZE
+					,(float)_playerRC.top };
+	_probeRcRight = { (float)_playerRC.right
+					,(float)_playerRC.bottom - TILE_SIZE
+					,(float)_playerRC.right + TILE_SIZE
+					,(float)_playerRC.bottom };
+	_probeRcBottom = { (float)_playerRC.left
+					,(float)_playerRC.bottom
+					,(float)_playerRC.left + TILE_SIZE
+					,(float)_playerRC.bottom + TILE_SIZE };
+	_jumpPower = JUMP_POWER;
+	_slopeAngle = 0.f;
 	_gravity = GRAVITY;
-	
+	_posX = _plLeft + (PLAYER_WIDTH / 2);
+	_posY = _plTop + (PLAYER_HEIGHT / 2);
 	
 	animationSet();
 	
@@ -50,357 +68,237 @@ void player::release()
 
 void player::update()
 {
-	
 	_speed = TIMEMANAGER->getElapsedTime() * PLAYER_SPEED;
-	
-	inputKey();
-	if (_playerState == JUMP || _prePlayerState == JUMP)
-		jump();
-	animationSet();
+	_posX = _plLeft + (PLAYER_WIDTH / 2);
+	_posY = _plTop + (PLAYER_HEIGHT / 2);
 
-	_playerRC = { (float)_centerX
-				,(float)_centerY
-				,(float)(_centerX + PLAYER_WIDTH)
-				,(float)(_centerY + PLAYER_HEIGHT) };
+	gravity();
+	inputKey();
+	jump();		//_playerState == jump 일 때 함수
+
+	_playerRC = { (float)_plLeft
+				, (float)_plTop
+				, (float)_plLeft + (PLAYER_WIDTH)
+				, (float)_plTop + (PLAYER_HEIGHT) };
+	//타일 검사할 때 사용할 rect
+	_probeRcLeft = { (float)_playerRC.left - TILE_SIZE
+					,(float)_playerRC.bottom - TILE_SIZE
+					,(float)_playerRC.left
+					,(float)_playerRC.bottom };
+	_probeRcTop = { (float)_playerRC.left
+					,(float)_playerRC.top - TILE_SIZE
+					,(float)_playerRC.left + TILE_SIZE
+					,(float)_playerRC.top };
+	_probeRcRight = { (float)_playerRC.right
+					,(float)_playerRC.bottom - TILE_SIZE
+					,(float)_playerRC.right + TILE_SIZE
+					,(float)_playerRC.bottom };
+	_probeRcBottom = { (float)_playerRC.left
+					,(float)_playerRC.bottom
+					,(float)_playerRC.left + TILE_SIZE
+					,(float)_playerRC.bottom + TILE_SIZE };
+
+	_tileX = _plLeft / 40;
+	_tileY = _plTop / 40;
+
+	
 	KEYANIMANAGER->update(_aniKey);
 }
 
 void player::render()
 {
-	D2DMANAGER->drawRectangle(_playerRC);
+	D2DMANAGER->drawRectangle(RGB(0, 0, 255), _playerRC);
+	//D2DMANAGER->drawRectangle(RGB(0,0,255), _probeRcLeft);
+	//D2DMANAGER->drawRectangle(RGB(0,0,255), _probeRcTop);
+	//D2DMANAGER->drawRectangle(RGB(0,0,255), _probeRcRight);
+	//D2DMANAGER->drawRectangle(RGB(0,0,255), _probeRcBottom);
+
+	//D2DMANAGER->drawRectangle(RGB(0, 0, 255), (_tileX) * TILE_SIZE, _tileY * TILE_SIZE, (_tileX + 1) * TILE_SIZE, (_tileY + 1)* TILE_SIZE);
+
+	////플레이어 왼쪽의 rect
+	//D2DMANAGER->drawRectangle(RGB(0, 0, 255), (_tileX - 1 )* TILE_SIZE, _tileY * TILE_SIZE, _tileX * TILE_SIZE, (_tileY + 1) * TILE_SIZE);
+	//
+	////플레이어 아래의 rect
+	//D2DMANAGER->drawRectangle(RGB(0,0,255), _tileX * TILE_SIZE, (_tileY + 1) * TILE_SIZE, (_tileX + 1) * TILE_SIZE, (_tileY + 2) * TILE_SIZE);
 	
-	if (_playerDir == LEFT ||_prePlayerDir == LEFT)
+	/*if (_playerDir == LEFT ||_prePlayerDir == LEFT)*/
+	if (_playerDir == LEFT)
 		IMAGEMANAGER->findImage(_imgKey)->aniRender( (_playerRC.left + ((_playerRC.right - _playerRC.left) /2 ))- (IMAGEMANAGER->findImage(_imgKey)->GetFrameWidth() / 2)
 													,(_playerRC.top + ((_playerRC.bottom - _playerRC.top) / 2 ))- (IMAGEMANAGER->findImage(_imgKey)->GetFrameHeight() / 2)
 													,_animation);
 	
-	else if (_playerDir == RIGHT || _prePlayerDir == RIGHT)
+	/*else if (_playerDir == RIGHT || _prePlayerDir == RIGHT)*/
+	else if (_playerDir == RIGHT)
 		IMAGEMANAGER->findImage(_imgKey)->aniRenderReverseX((_playerRC.left + ((_playerRC.right - _playerRC.left) / 2)) - (IMAGEMANAGER->findImage(_imgKey)->GetFrameWidth() / 2)
 															, (_playerRC.top + ((_playerRC.bottom - _playerRC.top) / 2)) - (IMAGEMANAGER->findImage(_imgKey)->GetFrameHeight() / 2)
 															, _animation);
 
 	WCHAR str[128];
-	swprintf_s(str, L"centerY: %f", _centerY);
+	int temp1 = _probeRcLeft.left / TILE_SIZE;
+	int temp2 = _probeRcLeft.top / TILE_SIZE;
+	int tempPt1 = _ptMouse.x / TILE_SIZE;
+	int tempPt2 = _ptMouse.y / TILE_SIZE;
+	swprintf_s(str, L"mouse 위치의 tileX: %d", tempPt1);
+	D2DMANAGER->drawText(str, CAMERA->getPosX(), CAMERA->getPosY() + 330, 25, RGB(255, 255, 255));
+	swprintf_s(str, L"mouse 위치의 tileY: %d", tempPt2);
+	D2DMANAGER->drawText(str, CAMERA->getPosX(), CAMERA->getPosY() + 360, 25, RGB(255, 255, 255));
+
+	swprintf_s(str, L"probe Left X: %d", temp1);
+	D2DMANAGER->drawText(str, CAMERA->getPosX(), CAMERA->getPosY() + 390, 25, RGB(0, 0, 255));
+	swprintf_s(str, L"probe Left Y: %d", temp2);
+	D2DMANAGER->drawText(str, CAMERA->getPosX(), CAMERA->getPosY() + 420, 25, RGB(0, 0, 255));
+
+	swprintf_s(str, L"player Left: %f", _plLeft);
 	D2DMANAGER->drawText(str, CAMERA->getPosX(), CAMERA->getPosY() + 450, 25, RGB(255, 255, 255));
-	swprintf_s(str, L"Jump Power: %f", _jumpPower);
-	D2DMANAGER->drawText(str, CAMERA->getPosX(), CAMERA->getPosY() + 500, 25,RGB(255, 255 , 255));
-	//맨 첫시작에 렌더할때는 
-	//if(!_isLeft && !_isRight && _isIdle)
-	//	IMAGEMANAGER->findImage(_imgKey)->aniRenderReverseX(_playerRC.left, _playerRC.top, _animation);
-	//
-	////왼쪽 방향의 액션일 때
-	//if ((_isLeft && _isIdle) || _isLeft)
-	//	IMAGEMANAGER->findImage(_imgKey)->aniRender(_playerRC.left, _playerRC.top, _animation);
-	////오른쪽 방향의 액션일 때
-	//if ((_isRight && _isIdle) || _isRight)
-	//	IMAGEMANAGER->findImage(_imgKey)->aniRenderReverseX(_playerRC.left, _playerRC.top, _animation);
+	swprintf_s(str, L"Player Top: %f", _plTop);
+	D2DMANAGER->drawText(str, CAMERA->getPosX(), CAMERA->getPosY() + 480, 25,RGB(255, 255 , 255));
+	if (_playerState == MOVE && _playerDir == RIGHT)
+	{
+		swprintf_s(str, L"MOVE RIGHT");
+		D2DMANAGER->drawText(str, CAMERA->getPosX(), CAMERA->getPosY() + 510, 25, RGB(255, 255, 255));
+	}
+	if (_playerState == MOVE && _playerDir == LEFT)
+	{
+		swprintf_s(str, L"MOVE LEFT");
+		D2DMANAGER->drawText(str, CAMERA->getPosX(), CAMERA->getPosY() + 540, 25, RGB(255, 255, 255));
+	}
+	swprintf_s(str, L"ATTR : %d", _map->getTile(_tileX, _tileY)->attr );
+	D2DMANAGER->drawText(str, CAMERA->getPosX(), CAMERA->getPosY() + 570, 25, RGB(255, 255, 255));
+
 }
 
 void player::inputKey()
 {
-	//움직이는 키
-	switch (_playerState)
-	{
-	case IDLE:
-		if (KEYMANAGER->isOnceKeyDown(VK_LEFT)) 
-		{
-			_playerState = MOVE;
-			_playerDir = LEFT; 
-		}
-		if (KEYMANAGER->isOnceKeyDown(VK_RIGHT))
-		{
-			_playerState = MOVE;
-			_playerDir = RIGHT;
-		}
-		if (KEYMANAGER->isOnceKeyDown(VK_UP)) 
-		{
-			_prePlayerDir = _playerDir;
-			_playerDir = TOP; 
-		}
-		else if (KEYMANAGER->isOnceKeyUp(VK_UP))
-		{
-			_playerState = IDLE;
-			if (_prePlayerDir == LEFT) _playerDir = LEFT;
-			else if (_prePlayerDir == RIGHT) _playerDir = RIGHT;
-		}
+	int posXInd = _posX / TILE_SIZE;
+	int posYInd = _posY / TILE_SIZE;
 
-		if (KEYMANAGER->isOnceKeyDown(VK_DOWN)) 
-		{ 
-			_prePlayerDir = _playerDir; 
-			_playerDir = BOTTOM; 
-		}
-		else if (KEYMANAGER->isOnceKeyUp(VK_DOWN))
+	int leftInd = _playerRC.left / TILE_SIZE;
+	int rightInd = _playerRC.right / TILE_SIZE;
+	int topInd = _playerRC.top / TILE_SIZE;
+	int bottomInd = _playerRC.bottom / TILE_SIZE;
+	if (((_map->getTile((UINT)leftInd, (UINT)topInd)->attr & TS_UNMOVE) == TS_UNMOVE) &&
+		((_map->getTile((UINT)posXInd, (UINT)bottomInd)->attr	& TS_UNMOVE) != TS_UNMOVE))
+	{
+		_plTop += _gravity;
+	}
+	if (KEYMANAGER->isStayKeyDown(VK_LEFT))
+	{
+		if (posXInd == leftInd)
 		{
-			_playerState = IDLE;
-			if (_prePlayerDir == LEFT) _playerDir = LEFT;
-			else if (_prePlayerDir == RIGHT) _playerDir = RIGHT;
+			if ((_map->getTile((UINT)leftInd, (UINT)topInd)->attr & TS_UNMOVE) != TS_UNMOVE)
+			{
+				_plLeft -= _speed;
+			}
 		}
-		//점프키
-		if (KEYMANAGER->isStayKeyDown('X'))
+		if (posXInd != leftInd)
 		{
-			_playerState = JUMP;
-			_jumpState = JUMP_RISE;
-			_jumpPower = JUMP_POWER;
-			
-			//만약에 점프 파워가 중력에 의해 0이 되면 
-			//if(){_jumpState = JUMP_FALL;}
+			if ((_map->getTile((UINT)leftInd, (UINT)topInd)->attr & TS_UNMOVE) != TS_UNMOVE)
+			{
+				_plLeft -= _speed;
+			}
 		}
-		if (KEYMANAGER->isOnceKeyUp('X'))
+		//if (((_map->getTile((UINT)((_playerRC.left +1) / TILE_SIZE), (UINT)(_playerRC.top / TILE_SIZE))->attr & TS_UNMOVE) == TS_UNMOVE))
+		//{
+		//	_plLeft += _speed;
+		//}
+		//if (((_map->getTile((UINT)(_playerRC.left / TILE_SIZE), (UINT)(_playerRC.top / TILE_SIZE))->attr & TS_SLOPE) == TS_SLOPE))
+		//{
+		//
+		//}
+		//_plLeft -= _speed;
+		//if (_playerState == JUMP )
+		//{
+		//	//_playerState == JUMP_MOVE;
+		//}
+		if(_playerState != JUMP)
 		{
-			_jumpState = JUMP_FALL;
-		}
-		break;
-	case MOVE:
-		if (KEYMANAGER->isOnceKeyDown(VK_LEFT)) 
-		{
-			_playerState = MOVE; 
-			_playerDir = LEFT; 
-		}
-		else if (KEYMANAGER->isOnceKeyUp(VK_LEFT))
-		{
-			_playerState = IDLE;
-			if (_prePlayerDir == LEFT) _playerDir = LEFT;
-			else if (_prePlayerDir == RIGHT) _playerDir = RIGHT;
-		}
-		if (KEYMANAGER->isOnceKeyDown(VK_RIGHT)) 
-		{ 
-			_playerState = MOVE;	
-			_playerDir = RIGHT; 
-		}
-		else if (KEYMANAGER->isOnceKeyUp(VK_RIGHT))
-		{
-			_playerState = IDLE;
-			if (_prePlayerDir == LEFT) _playerDir = LEFT;
-			else if (_prePlayerDir == RIGHT) _playerDir = RIGHT;
-		}
-		if (KEYMANAGER->isOnceKeyDown(VK_UP)) 
-		{
-			_prePlayerDir = _playerDir;
-			_playerDir = TOP; 
-		}
-		else if (KEYMANAGER->isOnceKeyUp(VK_UP))
-		{
-			_playerState = IDLE;
-			if (_prePlayerDir == LEFT) _playerDir = LEFT;
-			else if (_prePlayerDir == RIGHT) _playerDir = RIGHT;
-		}
-		if (KEYMANAGER->isOnceKeyDown(VK_DOWN)) 
-		{
-			_prePlayerDir = _playerDir;
-			_playerDir = BOTTOM; 
-		}
-		else if (KEYMANAGER->isOnceKeyUp(VK_DOWN)) 
-		{ 
-			_playerState = IDLE; 
-			if (_prePlayerDir == LEFT) _playerDir = LEFT; 
-			else if (_prePlayerDir == RIGHT) _playerDir = RIGHT; 
-		}
-		//점프키
-		if (KEYMANAGER->isStayKeyDown('X'))
-		{
-			_playerState = JUMP;
-			_jumpState = JUMP_RISE;
-			
-			//만약에 점프 파워가 중력에 의해 0이 되면 
-			//if(){_jumpState = JUMP_FALL;}
-		}
-		if (KEYMANAGER->isOnceKeyUp('X'))
-		{
-			_jumpState = JUMP_FALL;
-		}
-		break;
-	case JUMP:
-		if (KEYMANAGER->isOnceKeyDown(VK_LEFT))
-		{
-			_prePlayerState = JUMP;
 			_playerState = MOVE;
-			_playerDir = LEFT;
+			aniStart("moveLeft");
 		}
-		if (KEYMANAGER->isOnceKeyUp(VK_LEFT))
+		_playerDir = LEFT;
+	}
+	if (KEYMANAGER->isOnceKeyUp(VK_LEFT))
+	{
+		aniStart("left");
+		_playerState = IDLE;
+		_playerDir = LEFT;
+	}
+	if (KEYMANAGER->isStayKeyDown(VK_RIGHT))
+	{
+		if (((_map->getTile((UINT)(_playerRC.right / TILE_SIZE), (UINT)(_playerRC.top / TILE_SIZE))->attr  & TS_UNMOVE) == TS_UNMOVE))
 		{
-			_playerState = IDLE;
-			if (_prePlayerDir == LEFT) _playerDir = LEFT;
-			else if (_prePlayerDir == RIGHT) _playerDir = RIGHT;
+			_plLeft -= _speed;
 		}
-		if (KEYMANAGER->isOnceKeyDown(VK_RIGHT))
+		_plLeft += _speed;
+		
+		if(_playerState != JUMP)
 		{
-			_prePlayerState = JUMP;
 			_playerState = MOVE;
-			_playerDir = RIGHT;
-		}
-		else if (KEYMANAGER->isOnceKeyUp(VK_RIGHT))
-		{
-			_playerState = IDLE;
-			if (_prePlayerDir == LEFT) _playerDir = LEFT;
-			else if (_prePlayerDir == RIGHT) _playerDir = RIGHT;
-		}
-		if (KEYMANAGER->isOnceKeyDown(VK_UP))
-		{
-			_prePlayerDir = _playerDir;
-			_playerDir = TOP;
-		}
-		else if (KEYMANAGER->isOnceKeyUp(VK_UP))
-		{
-			_playerState = IDLE;
-			if (_prePlayerDir == LEFT) _playerDir = LEFT;
-			else if (_prePlayerDir == RIGHT) _playerDir = RIGHT;
-		}
-		if (KEYMANAGER->isOnceKeyDown(VK_DOWN))
-		{
-			_prePlayerDir = _playerDir;
-			_playerDir = BOTTOM;
-		}
-		else if (KEYMANAGER->isOnceKeyUp(VK_DOWN))
-		{
-			_playerState = IDLE;
-			if (_prePlayerDir == LEFT) _playerDir = LEFT;
-			else if (_prePlayerDir == RIGHT) _playerDir = RIGHT;
+			aniStart("moveLeft");
 		}
 		
-		break;
-	case ATK:
-		break;
-	
-	default:
-		break;
+		_playerDir = RIGHT;
+	}
+	if (KEYMANAGER->isOnceKeyUp(VK_RIGHT))
+	{
+		aniStart("left");
+		_playerState = IDLE;
+		_playerDir = RIGHT;
+	}
+	if (KEYMANAGER->isOnceKeyDown('X'))
+	{
+		_jumpPower = JUMP_POWER;
+		if (_playerState == JUMP)
+			_jumpPower = 0;
+		_playerState = JUMP;
+		_jumpState = JUMP_RISE;
+		aniStart("jumpRiseLeft");
+	}
+	if (KEYMANAGER->isOnceKeyUp('X'))
+	{
+		_jumpState = JUMP_FALL;
 	}
 
-	moveLeft();
-	moveRight();
-	/*if (_playerDir == LEFT && _playerState == MOVE && _playerDir != RIGHT) {  }
-	else if (_playerDir == RIGHT && _playerState == MOVE && _playerDir != LEFT) {  }*/
+	//위를 바라보면
+	if (KEYMANAGER->isStayKeyDown(VK_UP))
+	{
+		//if (_playerState == MOVE || _playerState == IDLE)
+		//{
+			aniStart("lookUpIdle");
+			
+		//}
+		//if (_playerState == JUMP)
+		//{
+		//
+		//}
+	}
+	if (KEYMANAGER->isOnceKeyUp(VK_UP))
+	{
 
+	}
+	//아래키를 누르면
+	if (KEYMANAGER->isStayKeyDown(VK_DOWN))
+	{
 
-	//if (_playerDir == TOP || _playerDir == BOTTOM)
-	//{
-	//	if (KEYMANAGER->isOnceKeyUp(VK_UP))
-	//	{
-	//		//이전 방향이 왼쪽이냐 오른쪽이냐에 따라서 현재 설정할 플레이어의 방향이 달라짐
-	//		_playerState = IDLE;
-	//		_playerDir = _prePlayerDir;
-	//		/*if (_prePlayerDir == LEFT)
-	//			_playerDir = LEFT;
-	//		if (_prePlayerDir == RIGHT)
-	//			_playerDir = RIGHT;*/
-	//	}
-	//	if (KEYMANAGER->isOnceKeyUp(VK_DOWN))
-	//	{
-	//		_playerState = IDLE;
-	//		_playerDir = _prePlayerDir;
-	//	}
-	//}
+	}
+	if (KEYMANAGER->isOnceKeyUp(VK_DOWN))
+	{
 
-
-	//왼쪽
-	//if (KEYMANAGER->isStayKeyDown(VK_LEFT))
-	//{
-	//	moveLeft();
-	//	_prePlayerState = _playerState;
-	//	_playerState = MOVE;
-	//	_prePlayerDir = _playerDir;
-	//	_playerDir = LEFT;
-	//}
-	//if (KEYMANAGER->isOnceKeyUp(VK_LEFT))
-	//{
-	//	_playerState = IDLE;
-	//	_playerDir = LEFT;
-	//}
-	////오른쪽
-	//if (KEYMANAGER->isStayKeyDown(VK_RIGHT))
-	//{
-	//	moveRight();
-	//	_prePlayerState = _playerState;
-	//	_playerState = MOVE;
-	//	_prePlayerDir = _playerDir;
-	//	_playerDir = RIGHT;
-	//}
-	//if (KEYMANAGER->isOnceKeyUp(VK_RIGHT))
-	//{
-	//	_playerState = IDLE;
-	//	_playerDir = RIGHT;
-	//}
-	////위쪽 바라보기
-	//if (KEYMANAGER->isStayKeyDown(VK_UP))
-	//{
-	//	_prePlayerState = _playerState;
-	//	_prePlayerDir = _playerDir;
-
-	//	_playerState = IDLE;
-	//	_playerDir = TOP;
-	//}
-	//
-	////아래키
-	//if (KEYMANAGER->isStayKeyDown(VK_DOWN))
-	//{
-	//	_prePlayerState = _playerState;
-	//	_prePlayerDir = _playerDir;
-	//	//만약에 이전 방향이 왼쪽이고 현재 방향이 BOTTOM 이면 왼쪽에서 벽보는 이미지가 나와야함
-	//	_playerDir = BOTTOM;
-	//	//1. 점프가 아닐 때는 벽을 봄(움직이는 중이거나 아이들 상태였을 때)
-	//	if (_playerState == MOVE || _playerState == IDLE)
-	//	{
-	//		_playerState = IDLE;
-	//		// 1-1.만약에 포탈이 있으면 씬 전환
-
-	//		//1-2.만약에 아이템이 있으면 아이템을 주움
-	//	}
-	//	//보류
-	//	/*
-	//	//2. 점프일 때는 아래방향으로 팔을내림
-	//	//if (_playerState == JUMP)
-	//	//{
-	//	//
-	//	//}
-	//	// 3. 공격일 때는 아래방향으로 총을 쏨
-	//	//if(_playerState == ATK)
-	//	//{
-	//	//	//_playerDir
-	//	//}
-	//	*/
-	//}
-	//
-	////공격키
-	//if (KEYMANAGER->isOnceKeyDown('Z'))
-	//{
-	//	_prePlayerState = _playerState;
-	//	//_prePlayerDir = _playerDir;
-
-	//	_playerState = ATK;
-	//}
-	//if (KEYMANAGER->isOnceKeyUp('Z'))
-	//{
-	//	_playerState = _prePlayerState;
-	//	//_playerDir
-	//}
-	////점프키
-	//if (KEYMANAGER->isOnceKeyDown('X'))
-	//{
-	//	_playerState = JUMP;
-	//	_jumpState = JUMP_RISE;
-	//	//만약에 점프 파워가 중력에 의해 0이 되면 
-	//	//if(){_jumpState = JUMP_FALL;}
-	//}
-	//if (KEYMANAGER->isOnceKeyUp('X'))
-	//{
-	//	_jumpState = JUMP_FALL;
-	//}
-
-	
-
+	}
 }
 
 void player::animationSet()
 {
 	_imgKey = "quote";
 	_aniKey = "quoteAni";
-	
+
 	IMAGEMANAGER->addFrameImage(_imgKey, L"image/quote.png", 440, 40, 11, 1);
 	KEYANIMANAGER->addAnimationType(_aniKey);
 
 	int left[] = { 0 };
 	KEYANIMANAGER->addArrayFrameAnimation(_aniKey, "left", _imgKey, left, 1, 6, false);
 	int moveLeft[] = { 0, 1, 2, 3 };
-	KEYANIMANAGER->addArrayFrameAnimation(_aniKey, "moveLeft", _imgKey, moveLeft, 4, 6, true);
+	KEYANIMANAGER->addArrayFrameAnimation(_aniKey, "moveLeft", _imgKey, moveLeft, 4, 6, false);
 	int jumpRiseLeft[] = { 3 };
 	KEYANIMANAGER->addArrayFrameAnimation(_aniKey, "jumpRiseLeft", _imgKey, jumpRiseLeft, 1, 6, false);
 	int jumpFallLeft[] = { 4 };
@@ -417,193 +315,8 @@ void player::animationSet()
 	KEYANIMANAGER->addArrayFrameAnimation(_aniKey, "lookDownIdle", _imgKey, lookDownIdle, 1, 6, false);
 
 	aniStart("left");
-	
 
-	/*
-	int downLeft[] = { 8 };
-	int upLeft[] = { 7 };
-	int jumpLeft[] = { 3 };
-	int downAtkLeft[] = { 9 };
-	int fallingLeft[] = { 4 };
-	//int upAtkLeft[] = { 7 };
-	int jumpUpAtkLeft[] = { 5 };
-	int fallingUpAtkLeft[] = { 6 };
-	switch (_playerState)
-	{
-	case IDLE:
-		if (_playerDir == LEFT)
-		{
-			KEYANIMANAGER->addArrayFrameAnimation(_aniKey, "left", _imgKey, left, 1, 6, false);
-			_animation = KEYANIMANAGER->findAnimation(_aniKey, "left");
-		}
-		if (_playerDir == RIGHT)
-		{
-			KEYANIMANAGER->addArrayFrameAnimation(_aniKey, "left", _imgKey, left, 1, 6, false);
-			_animation = KEYANIMANAGER->findAnimation(_aniKey, "left");
-		}
-		if (_playerDir == TOP)
-		{
-			KEYANIMANAGER->addArrayFrameAnimation(_aniKey, "upLeft", _imgKey, upLeft, 1, 6, false);
-			_animation = KEYANIMANAGER->findAnimation(_aniKey, "upLeft");
-		}
-		if (_playerDir == BOTTOM)
-		{
-			KEYANIMANAGER->addArrayFrameAnimation(_aniKey, "downLeft", _imgKey, downLeft, 1, 6, false);
-			_animation = KEYANIMANAGER->findAnimation(_aniKey, "downLeft");
-		}
-		break;
-	case MOVE:
-		if (_playerDir == LEFT)
-		{
-			KEYANIMANAGER->addArrayFrameAnimation(_aniKey, "moveLeft", _imgKey, moveLeft, 4, 6, false);
-			_animation = KEYANIMANAGER->findAnimation(_aniKey, "moveLeft");
-		}
-		if (_playerDir == RIGHT)
-		{
-			KEYANIMANAGER->addArrayFrameAnimation(_aniKey, "moveLeft", _imgKey, moveLeft, 4, 6, false);
-			_animation = KEYANIMANAGER->findAnimation(_aniKey, "moveLeft");
-		}
-		if (_playerDir == TOP)
-		{
-			KEYANIMANAGER->addArrayFrameAnimation(_aniKey, "upLeft", _imgKey, upLeft, 1, 6, false);
-			_animation = KEYANIMANAGER->findAnimation(_aniKey, "upLeft");
-		}
-		if (_playerDir == BOTTOM)
-		{
-			KEYANIMANAGER->addArrayFrameAnimation(_aniKey, "downLeft", _imgKey, downLeft, 1, 6, false);
-			_animation = KEYANIMANAGER->findAnimation(_aniKey, "downLeft");
-		}
-		break;
-	case JUMP:
-		break;
-	case ATK:
-		break;
-	case STATE_COUNT:
-		break;
-	default:
-		break;
-	}*/
 
-	
-	
-	
-
-	/*switch (_playerAction)
-	{
-	case LEFT:
-		
-	case RIGHT:
-		KEYANIMANAGER->addArrayFrameAnimation(_aniKey, "left", _imgKey, left, 1, 6, false);
-		_animation = KEYANIMANAGER->findAnimation(_aniKey, "left");
-		break;
-	case UP_LEFT:
-		KEYANIMANAGER->addArrayFrameAnimation(_aniKey, "upLeft", _imgKey, upLeft, 1, 6, false);
-		_animation = KEYANIMANAGER->findAnimation(_aniKey, "upLeft");
-		break;
-	case UP_RIGHT:
-		KEYANIMANAGER->addArrayFrameAnimation(_aniKey, "upLeft", _imgKey, upLeft, 1, 6, true);
-		_animation = KEYANIMANAGER->findAnimation(_aniKey, "upLeft");
-		break;
-		break;
-	case DOWN_LEFT:
-		KEYANIMANAGER->addArrayFrameAnimation(_aniKey, "downLeft", _imgKey, downLeft, 1, 6, false);
-		_animation = KEYANIMANAGER->findAnimation(_aniKey, "downLeft");
-		break;
-	case DOWN_RIGHT:
-		KEYANIMANAGER->addArrayFrameAnimation(_aniKey, "downLeft", _imgKey, downLeft, 1, 6, false);
-		_animation = KEYANIMANAGER->findAnimation(_aniKey, "downLeft");
-		break;
-	case MOVE_LEFT:
-		KEYANIMANAGER->addArrayFrameAnimation(_aniKey, "moveLeft", _imgKey, moveLeft, 4, 5, true);
-		_animation = KEYANIMANAGER->findAnimation(_aniKey, "moveLeft");
-		break;
-	case MOVE_RIGHT:
-		KEYANIMANAGER->addArrayFrameAnimation(_aniKey, "moveLeft", _imgKey, moveLeft, 4, 5, true);
-		_animation = KEYANIMANAGER->findAnimation(_aniKey, "moveLeft");
-		break;
-
-	case ATK_LEFT:
-		KEYANIMANAGER->addArrayFrameAnimation(_aniKey, "left", _imgKey, left, 1, 6, false);
-		_animation = KEYANIMANAGER->findAnimation(_aniKey, "left");
-		break;
-	case ATK_RIGHT:
-		KEYANIMANAGER->addArrayFrameAnimation(_aniKey, "left", _imgKey, left, 1, 6, false);
-		_animation = KEYANIMANAGER->findAnimation(_aniKey, "left");
-		break;
-	case UP_ATK_LEFT:
-		KEYANIMANAGER->addArrayFrameAnimation(_aniKey, "upAtkLeft", _imgKey, upAtkLeft, 1, 6, false);
-		_animation = KEYANIMANAGER->findAnimation(_aniKey, "upAtkLeft");
-		break;
-	case UP_ATK_RIGHT:
-		KEYANIMANAGER->addArrayFrameAnimation(_aniKey, "upAtkLeft", _imgKey, upAtkLeft, 1, 6, false);
-		_animation = KEYANIMANAGER->findAnimation(_aniKey, "upAtkLeft");
-		break;
-	case JUMP_ATK_LEFT:
-		KEYANIMANAGER->addArrayFrameAnimation(_aniKey, "jumpLeft", _imgKey, jumpLeft, 1, 6, false);
-		_animation = KEYANIMANAGER->findAnimation(_aniKey, "jumpLeft");
-		break;
-	case JUMP_ATK_RIGHT:
-		KEYANIMANAGER->addArrayFrameAnimation(_aniKey, "jumpLeft", _imgKey, jumpLeft, 1, 6, false);
-		_animation = KEYANIMANAGER->findAnimation(_aniKey, "jumpLeft");
-		break;
-	case FALLING_ATK_LEFT:
-		KEYANIMANAGER->addArrayFrameAnimation(_aniKey, "fallingLeft", _imgKey, fallingLeft, 1, 6, false);
-		_animation = KEYANIMANAGER->findAnimation(_aniKey, "fallingLeft");
-		break;
-	case FALLING_ATK_RIGHT:
-		KEYANIMANAGER->addArrayFrameAnimation(_aniKey, "fallingLeft", _imgKey, fallingLeft, 1, 6, false);
-		_animation = KEYANIMANAGER->findAnimation(_aniKey, "fallingLeft");
-		break;
-	
-	case DOWN_ATK_LEFT:
-		KEYANIMANAGER->addArrayFrameAnimation(_aniKey, "downAtkLeft", _imgKey, downAtkLeft, 1, 1, true);
-		_animation = KEYANIMANAGER->findAnimation(_aniKey, "downAtkLeft");
-		break;
-	case DOWN_ATK_RIGHT:
-		KEYANIMANAGER->addArrayFrameAnimation(_aniKey, "downAtkLeft", _imgKey, downAtkLeft, 1, 1, true);
-		_animation = KEYANIMANAGER->findAnimation(_aniKey, "downAtkLeft");
-		break;
-	case JUMP_LEFT:
-		KEYANIMANAGER->addArrayFrameAnimation(_aniKey, "jumpLeft", _imgKey, jumpLeft, 1, 6, false);
-		_animation = KEYANIMANAGER->findAnimation(_aniKey, "jumpLeft");
-		break;
-	case JUMP_RIGHT:
-		KEYANIMANAGER->addArrayFrameAnimation(_aniKey, "jumpLeft", _imgKey, jumpLeft, 1, 6, false);
-		_animation = KEYANIMANAGER->findAnimation(_aniKey, "jumpLeft");
-		break;
-	case JUMP_UP_ATK_LEFT:
-		KEYANIMANAGER->addArrayFrameAnimation(_aniKey, "jumpUpAtkLeft", _imgKey, jumpUpAtkLeft, 1, 6, false);
-		_animation = KEYANIMANAGER->findAnimation(_aniKey, "jumpUpAtkLeft");
-		break;	
-	case JUMP_UP_ATK_RIGHT:
-		KEYANIMANAGER->addArrayFrameAnimation(_aniKey, "jumpUpAtkLeft", _imgKey, jumpUpAtkLeft, 1, 6, false);
-		_animation = KEYANIMANAGER->findAnimation(_aniKey, "jumpUpAtkLeft");
-		break;
-	case FALLING_UP_ATK_LEFT:
-		KEYANIMANAGER->addArrayFrameAnimation(_aniKey, "fallingUpAtkLeft", _imgKey, fallingUpAtkLeft, 1, 6, false);
-		_animation = KEYANIMANAGER->findAnimation(_aniKey, "fallingUpAtkLeft");
-		break;
-	case FALLING_UP_ATK_RIGHT:
-		KEYANIMANAGER->addArrayFrameAnimation(_aniKey, "fallingUpAtkLeft", _imgKey, fallingUpAtkLeft, 1, 6, false);
-		_animation = KEYANIMANAGER->findAnimation(_aniKey, "fallingUpAtkLeft");
-		break;
-	
-	case LEFT_FALLING:
-		KEYANIMANAGER->addArrayFrameAnimation(_aniKey, "fallingLeft", _imgKey, fallingLeft, 1, 6, false);
-		_animation = KEYANIMANAGER->findAnimation(_aniKey, "fallingLeft");
-		break;
-	case RIGHT_FALLING:
-		KEYANIMANAGER->addArrayFrameAnimation(_aniKey, "fallingLeft", _imgKey, fallingLeft, 1, 6, false);
-		_animation = KEYANIMANAGER->findAnimation(_aniKey, "fallingLeft");
-		break;
-	
-	default:
-		break;
-	}*/
-	
-
-	//_animation = KEYANIMANAGER->findAnimation(_aniKey, "left");
-	//_animation->start();
 }
 
 void player::aniStart(string aniKey)
@@ -612,56 +325,135 @@ void player::aniStart(string aniKey)
 	_animation->start();
 }
 
-void player::moveLeft()
+
+
+void player::gravity()
 {
-	int probeFloorX = _playerRC.bottom / TILE_SIZE;
-	int probeFloorY = _playerRC.bottom / TILE_SIZE;
-
-	if ((_playerState == MOVE && _playerDir == LEFT) || (_prePlayerState == JUMP && _playerDir == LEFT))
+	DWORD leftBottomAttr = _map->getTile((UINT)(_playerRC.left / TILE_SIZE), (UINT)(_playerRC.bottom / TILE_SIZE))->attr;
+	DWORD rightBottomAttr = _map->getTile((UINT)(_playerRC.right / TILE_SIZE), (UINT)(_playerRC.bottom / TILE_SIZE))->attr;
+	int temp1 = _playerRC.left / TILE_SIZE;
+	int temp2 = _playerRC.right / TILE_SIZE;
+	//플레이어가 딱 한 타일에 들어있을 때
+	if (temp1 == temp2)
 	{
-		_centerX -= _speed;
-		//if (_map->getTile())
+		//만약에 플레이어의 바닥 면이 비어있으면 중력을 받음
+		if (((leftBottomAttr & TS_UNMOVE) != TS_UNMOVE) &&
+			((rightBottomAttr & TS_UNMOVE) != TS_UNMOVE))
 		{
-		
+			for (int i = 0; i < 300; ++i)
+			{
+				_gravity = TIMEMANAGER->getElapsedTime() * (GRAVITY + 0.1 * i);
+			}
+			_plTop += _gravity;
 		}
+		//왼쪽이나 오른쪽의 바닥 중 하나라도 unmove 속성이 있으면 중력 X
+		if (((leftBottomAttr & TS_UNMOVE) == TS_UNMOVE) ||
+			((rightBottomAttr & TS_UNMOVE) == TS_UNMOVE))
+		{
+			_gravity = 0;
+			_playerState = IDLE;
+		}
+	}
+	//플레이어가 두 타일에 걸쳐있을 때
+	if (temp1 != temp2)
+	{
+		if (((leftBottomAttr & TS_UNMOVE) != TS_UNMOVE) &&
+			((rightBottomAttr & TS_UNMOVE) != TS_UNMOVE))
+		{
+			for (int i = 0; i < 300; ++i)
+			{
+				_gravity = TIMEMANAGER->getElapsedTime() * (GRAVITY + 0.1 * i);
+			}
+			_plTop += _gravity;
+		}
+		//왼쪽이나 오른쪽의 바닥 중 하나라도 unmove 속성이 있으면 중력 X
+		if (((leftBottomAttr & TS_UNMOVE) == TS_UNMOVE) &&
+			((rightBottomAttr & TS_UNMOVE) == TS_UNMOVE))
+		{
+			_gravity = 0;
+			_playerState = IDLE;
 
+		}
 	}
 	
+	//DWORD leftTopAttr = _map->getTile((UINT)(_playerRC.left / TILE_SIZE), (UINT)(_playerRC.top / TILE_SIZE))->attr;
+	//DWORD rightTopAttr = _map->getTile((UINT)(_playerRC.right / TILE_SIZE), (UINT)(_playerRC.top / TILE_SIZE))->attr;
+
+	//DWORD leftBottomAttr = _map->getTile((UINT)(_playerRC.left / TILE_SIZE), (UINT)(_playerRC.bottom / TILE_SIZE))->attr;
+	//DWORD rightBottomAttr = _map->getTile((UINT)(_playerRC.right / TILE_SIZE), (UINT)(_playerRC.bottom / TILE_SIZE))->attr;
+	////만약에 플레이어의 밑면이 바닥과 닿아있으면 _gravity 는 0
+	//if (((_map->getTile((UINT)(_playerRC.left / TILE_SIZE), (UINT)(_playerRC.bottom / TILE_SIZE))->attr & TS_UNMOVE) == TS_UNMOVE) &&
+	//	((_map->getTile((UINT)(_playerRC.right / TILE_SIZE), (UINT)(_playerRC.bottom / TILE_SIZE))->attr & TS_UNMOVE) == TS_UNMOVE))
+	//{
+	//	_playerState = IDLE;
+	//}
+	////바닥과 닿아있지 않으면 _gravity 를 받고 밑으로 떨어짐
+	//if ((_playerRC.left / TILE_SIZE == _playerRC.right / TILE_SIZE) &&
+	//	(leftBottomAttr & TS_UNMOVE) == TS_UNMOVE && (leftTopAttr & TS_UNMOVE) == TS_UNMOVE)
+	//{
+	//	_jumpPower = 0;
+	//	_jumpState = JUMP_FALL;
+	//	aniStart("jumpFallLeft");
+	//}
+
+
+	//if (((_map->getTile((UINT)(_playerRC.left / TILE_SIZE), (UINT)(_playerRC.bottom / TILE_SIZE))->attr & TS_UNMOVE) != TS_UNMOVE) &&
+	//	((_map->getTile((UINT)(_playerRC.right / TILE_SIZE), (UINT)(_playerRC.bottom / TILE_SIZE))->attr & TS_UNMOVE) != TS_UNMOVE))
+	//{
+	//	for (int i = 0; i < 300; ++i)
+	//	{
+	//		_gravity = TIMEMANAGER->getElapsedTime() * (GRAVITY + 0.1 * i);
+	//	}
+	//	_plTop += _gravity;
+	//}
 }
 
-void player::moveRight()
+void player::collisionHead()
 {
-	/*if (_playerState != MOVE)
-		return;*/
-	if((_playerState == MOVE && _playerDir == RIGHT) ||(_prePlayerState == JUMP && _playerDir == RIGHT))
-		_centerX += _speed;
-}
 
+}
 
 void player::jump()
 {
+	//맵의 속성을 대입
+	DWORD leftTopAttr = _map->getTile((UINT)(_playerRC.left / TILE_SIZE), (UINT)(_playerRC.top / TILE_SIZE))->attr;
+	DWORD rightTopAttr = _map->getTile((UINT)(_playerRC.right / TILE_SIZE), (UINT)(_playerRC.top / TILE_SIZE))->attr;
+
+	DWORD leftBottomAttr = _map->getTile((UINT)(_playerRC.left / TILE_SIZE), (UINT)(_playerRC.bottom / TILE_SIZE))->attr;
+	DWORD rightBottomAttr = _map->getTile((UINT)(_playerRC.right / TILE_SIZE), (UINT)(_playerRC.bottom / TILE_SIZE))->attr;
 	//플레이어가 점프를 하면
-	
-	if (_playerState == JUMP)
+	if (_playerState == JUMP || _playerState == JUMP_MOVE)
 	{
-		//플레이어의 Y좌표를 점프 파워만큼 옮김
-
-		//if (_jumpPower <= 0)
-		//{
-			_centerY -= TIMEMANAGER->getElapsedTime() * _jumpPower;
-
-		//}
-		//else if(_jumpPower > 0)
-		//{
-		//	_centerY -= TIMEMANAGER->getElapsedTime() * _jumpPower;
-		//}
-		_jumpPower -= TIMEMANAGER->getElapsedTime() * _gravity;
-		//_gravity *= TIMEMANAGER->getElapsedTime();
-		//점프를 시작한 순간부터 파워를 점점 깎아서 0으로 만들고
+		//플레이어의 윗면이 UNMOVE에 닿으면
+		if ((_playerRC.left/ TILE_SIZE == _playerRC.right / TILE_SIZE) &&
+			((_map->getTile((UINT)(_playerRC.left / TILE_SIZE), (UINT)(_playerRC.top / TILE_SIZE))->attr & TS_UNMOVE) == TS_UNMOVE) ||
+			((_map->getTile((UINT)(_playerRC.right / TILE_SIZE), (UINT)(_playerRC.top  / TILE_SIZE))->attr  & TS_UNMOVE) == TS_UNMOVE))
+		{
+			_jumpPower = 0;
+			_jumpState = JUMP_FALL;
+			aniStart("jumpFallLeft");
+		}
+		if ((_playerRC.left / TILE_SIZE == _playerRC.right / TILE_SIZE) &&
+			(leftBottomAttr & TS_UNMOVE) == TS_UNMOVE && (leftTopAttr & TS_UNMOVE) == TS_UNMOVE)
+		{
+			_jumpPower = 0;
+			_jumpState = JUMP_FALL;
+			aniStart("jumpFallLeft");
+		}
 		
-
+	
+		_plTop -= TIMEMANAGER->getElapsedTime() * _jumpPower;
+		for (int i = 0; i < 300; ++i)
+		{
+			_gravity = TIMEMANAGER->getElapsedTime() * (GRAVITY + 0.1 * i);
+		}
+		_jumpPower -= _gravity;
+	
+		if (_jumpPower < 0)
+		{
+			_jumpState = JUMP_FALL;
+			aniStart("jumpFallLeft");
+		}
+	
 	}
-
-
-
 }

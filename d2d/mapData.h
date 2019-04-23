@@ -21,6 +21,7 @@ protected:
 	UINT						TILEY;					//불러올 맵의 타일 사이즈
 	
 	vector<vector<tagTile*>>	_vvTile;				//맵의 정보를 담을 이중벡터
+	vector<vector<D2D1_RECT_F>> _vvRect;				//맵의 Rect
 	player*						_player;				//쿼트
 
 	UINT						_rangeStartX;			//렌더시 보여주는 범위 만큼만 렌더하기 위해서 넣은 범위 변수(시작)
@@ -62,7 +63,8 @@ public:
 	void load(const char * mapSizeFileName, const char * mapFileName);
 	virtual void portalLoad();
 	
-	tagTile* getTile(UINT x, UINT y) { return _vvTile[x][y]; }
+	tagTile* getTile(UINT x, UINT y) { return _vvTile[y][x]; }
+	D2D1_RECT_F getRect(UINT x, UINT y) { return _vvRect[y][x]; }
 
 	//링크
 	virtual void setPlayerMemoryAdressLink(player* p) { _player = p; }

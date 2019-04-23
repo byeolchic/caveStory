@@ -3,29 +3,29 @@
 #define TILE_SIZE			40
 
 //TILE STATE							타일의 속성
-#define	TS_NONE					0X00000000
-#define TS_BACK					0X00000001		//배경타일
-#define TS_UNMOVE				0X00000002		//통과 못하는 타일
-#define TS_WALL					0X00000004		//벽
-#define TS_SLOPE				0X00000008		//경사길
-#define TS_WATER				0X00000010		//물
-#define TS_DIALOGUE				0X00000020		//다이얼로그가 뜨는 것
+#define	TS_NONE					0X00000000UL
+#define TS_BACK					0X00000001UL		//배경타일
+#define TS_UNMOVE				0X00000002UL		//통과 못하는 타일
+#define TS_WALL					0X00000004UL		//벽
+#define TS_SLOPE				0X00000008UL		//경사길
+#define TS_WATER				0X00000010UL		//물
+#define TS_DIALOGUE				0X00000020UL		//다이얼로그가 뜨는 것
 
 //#define TS_WATER_SLOPE			0X00000020	//물에서 경사길
-#define TS_CEILING				0X00000020		//천장
-#define TS_ZORDER				0X00000040		//제트오더용 tile
-#define TS_THORN_BUSH			0X00000080		//닿으면 바로 죽는 덤불
-//#define TS_CHAIN				0X00000100		//쇠사슬
-#define TS_POTAL				0X00000200		//포탈
-#define TS_DOOR					0X00000400		//문
+#define TS_CEILING				0X00000020UL		//천장
+#define TS_ZORDER				0X00000040UL		//제트오더용 tile
+#define TS_THORN_BUSH			0X00000080UL		//닿으면 바로 죽는 덤불
+//#define TS_CHAIN				0X00000100UL		//쇠사슬
+#define TS_POTAL				0X00000200UL		//포탈
+#define TS_DOOR					0X00000400UL		//문
 
 //============= << 프레임 오브젝트의 경우에는 맵에 찍고나서 frame으로 출력하도록 해보자 >> ===============
-#define TS_FRAME				0X00100000		//프레임이 있는 tile 들
-#define TS_BOX					0X00200000		//상자
-#define TS_DOOR					0X00400000		//눈이 있는 문
-#define TS_LIFE_CAPSULE			0X00800000		//라이프 캡슐
-#define TS_LIFE_CHARGE			0X01000000		//라이프 충전기
-#define TS_SAVE					0X02000000		//세이브 오브젝트
+#define TS_FRAME				0X00100000UL		//프레임이 있는 tile 들
+#define TS_BOX					0X00200000UL		//상자
+#define TS_DOOR					0X00400000UL		//눈이 있는 문
+#define TS_LIFE_CAPSULE			0X00800000UL		//라이프 캡슐
+#define TS_LIFE_CHARGE			0X01000000UL		//라이프 충전기
+#define TS_SAVE					0X02000000UL		//세이브 오브젝트
 
 
 
@@ -43,7 +43,7 @@ enum MAP_TYPE
 	MAP_TYPE_FIVE,
 
 
-	MAP_TYPE_COUNT	
+	MAP_TYPE_COUNT
 };
 
 enum SAMPLE_TILE_IMAGE_KEY
@@ -58,7 +58,7 @@ enum SAMPLE_TILE_IMAGE_KEY
 	SAMPLE_TILE_IMAGEKEY_07,
 	SAMPLE_TILE_IMAGEKEY_08,
 	SAMPLE_TILE_IMAGEKEY_09,
-	
+
 	SAMPLE_TILE_IMAGEKEY_COUNT
 
 };
@@ -69,21 +69,22 @@ typedef class tagTile
 {
 public:
 	tagTile() :
-				backgroundIndex(NULL),
-				backgroundX(NULL),
-				backgroundY(NULL),
+		backgroundIndex(NULL),
+		backgroundX(NULL),
+		backgroundY(NULL),
 
-				tileImgIndex(1),
-				terrainFrameX(NULL),
-				terrainFrameY(NULL),
+		tileImgIndex(1),
+		terrainFrameX(NULL),
+		terrainFrameY(NULL),
 
-				objImgIndex(NULL),
-				objectFrameX(NULL),
-				objectFrameY(NULL),
-		
-				zOrderFrameX(NULL),
-				zOrderFrameY(NULL),
-				attr(NULL)
+		objImgIndex(NULL),
+		objectFrameX(NULL),
+		objectFrameY(NULL),
+
+		zOrderFrameX(NULL),
+		zOrderFrameY(NULL),
+		attr(NULL)
+		//angle(NULL)
 	{};
 	~tagTile() {};
 public:
@@ -94,15 +95,17 @@ public:
 	UINT tileImgIndex;		//샘플타일의 인덱스까지 같이 저장해야 샘플 페이지를 넘길때 같이 바뀌는 일이 없당
 	UINT terrainFrameX;		//일단 0으로 초기화
 	UINT terrainFrameY;		//일단 0으로 초기화
-	
+
 	UINT objImgIndex;		//오브젝트의 이미지 인덱스
 	UINT objectFrameX;		//일단 0으로 초기화
 	UINT objectFrameY;		//일단 0으로 초기화
-	
+
+
 	UINT zOrderFrameY;		//일단 0으로 초기화
 	UINT zOrderFrameX;		//일단 0으로 초기화
 	DWORD attr;				//일단 0으로 초기화
 
+	//float	angle;			//일단 0으로 초기화
 	bool isBackground;		//백그라운드냐
 	bool isObj;				//오브젝트냐?
 	bool isZorder;			//제트오더냐?
@@ -121,7 +124,7 @@ public:
 			objImgIndex = tile.objImgIndex;
 		objectFrameX = tile.objectFrameX;
 		objectFrameY = tile.objectFrameY;
-		
+
 		zOrderFrameX = tile.zOrderFrameX;
 		zOrderFrameY = tile.zOrderFrameY;
 		attr = tile.attr;

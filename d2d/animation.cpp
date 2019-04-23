@@ -660,6 +660,10 @@ void animation::frameUpdate(float elapsedTime)
 
 void animation::start()
 {
+	if (_play == TRUE)
+	{
+		return;
+	}
 	_play = TRUE;
 	_nowPlayIndex = 0;
 	_isDoEvent = false;

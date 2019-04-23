@@ -45,6 +45,7 @@ HRESULT mapData::init(const char * mapSizeFileName, const char * mapFileName)
 	////_player->setMapDataMemoryAdressLink()
 	_rangeStartX = _rangeStartY = _rangeMaxX = _rangeMaxY = 0;
 	load(mapSizeFileName, mapFileName);
+
 	_portal.clear();
 
 	_saveFrameCount = 0;
@@ -72,8 +73,8 @@ void mapData::release()
 void mapData::update()
 {
 	frameUpdate();
-	_rangeStartX = _player->getPosX();
-	_rangeStartY = _player->getPosY();
+	//_rangeStartX = _player->getPosX() - WINSIZEX / 2;
+	//_rangeStartY = _player->getPosY() - WINSIZEY / 2;
 	//카메라 범위바깥 쪽에 있는 맵 타일 들은 출력하지 않기 위해서 그 범위 변수를 재조정 한다.
 	_rangeStartY = CAMERA->getPosY() / TILE_SIZE;
 	if (_rangeStartY < 0) _rangeStartY = 0;
@@ -88,6 +89,8 @@ void mapData::update()
 
 void mapData::render()
 {
+	WCHAR str[128];
+
 	for (; _rangeStartY < _rangeMaxY; ++_rangeStartY)
 	{
 		for (; _rangeStartX < _rangeMaxX; ++_rangeStartX)
@@ -124,6 +127,18 @@ void mapData::render()
 				{
 					IMAGEMANAGER->findImage("boxFrame")->frameRender(_rangeStartX * TILE_SIZE, _rangeStartY * TILE_SIZE, _boxFrameIndX, _boxFrameindY);
 				}
+				if ((_vvTile[_rangeStartY][_rangeStartX]->attr & TS_UNMOVE) == TS_UNMOVE)
+				{
+
+					swprintf_s(str, L"UN");
+					D2DMANAGER->drawText(str, _rangeStartX * TILE_SIZE, _rangeStartY * TILE_SIZE, 20, RGB(0, 0, 0));
+				}
+
+				D2DMANAGER->drawRectangle(RGB(200, 200, 200), _vvRect[_rangeStartY][_rangeStartX]);
+				/*swprintf_s(str, L"%d", _vvTile[_rangeStartY][_rangeStartX]->attr);
+				D2DMANAGER->drawText(str, _rangeStartX * TILE_SIZE, _rangeStartY * TILE_SIZE, 13, RGB(255, 255, 255));
+				*/	
+				
 				//if ((_vvTile[_rangeStartX][_rangeStartY]->attr & TS_LIFE_CAPSULE) == TS_LIFE_CAPSULE)
 				//{
 				//	IMAGEMANAGER->findImage("lifeCapsule")->frameRender(_rangeStartX * TILE_SIZE, _rangeStartY * TILE_SIZE, _lifeCapsuleIndX, _lifeCapsuleIndY);
@@ -273,6 +288,17 @@ void mapData::load(const char * mapSizeFileName, const char * mapFileName)
 		{
 			_vvTile[i][j] = &tile[j + i * TILEX];
 		}
+	}
+	for (int i = 0; i < TILEY; ++i)
+	{
+		vector<D2D1_RECT_F> vRect;
+		for (int j = 0; j < TILEX; ++j)
+		{
+			D2D1_RECT_F tempRect;
+			tempRect = { (float)j * TILE_SIZE, (float)i * TILE_SIZE, (float)(j + 1)*TILE_SIZE, (float)(i + 1)*TILE_SIZE };
+			vRect.push_back(tempRect);
+		}
+		_vvRect.push_back(vRect);
 	}
 }
 

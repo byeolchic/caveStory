@@ -5,17 +5,18 @@
 #define	 PLAYER_HEIGHT	36
 
 #define  PLAYER_SPEED	200.f
-#define  JUMP_POWER		350.f	
-#define  GRAVITY		350.f
+#define  JUMP_POWER		650.f	
+#define  GRAVITY		348.f
 
 
 
 enum PLAYER_STATE
 {
 	IDLE,
-	MOVE,		
-	JUMP,		
+	MOVE,
+	JUMP,
 	ATK,
+	JUMP_MOVE,
 
 	STATE_COUNT
 };
@@ -23,7 +24,8 @@ enum PLAYER_DIRECTION
 {
 	LEFT,
 	RIGHT,
-	TOP,
+	LEFT_TOP,
+	RIGHT_TOP,
 	BOTTOM,
 
 	DIRECTION_COUNT
@@ -107,23 +109,35 @@ class player : public gameNode
 	const char*			_aniKey;
 
 	D2D1_RECT_F			_playerRC;		//쿼트 렉트
-	float				_centerX;
-	float				_centerY;
+	D2D1_RECT_F			_probeRcLeft;
+	D2D1_RECT_F			_probeRcTop;
+	D2D1_RECT_F			_probeRcRight;
+	D2D1_RECT_F			_probeRcBottom;
+
+
+
+	float				_posX;
+	float				_posY;
+	float				_plLeft;
+	float				_plTop;
 	float				_speed;
 
+	float				_slopeAngle;
 	float				_jumpPower;
+	float	_tempColY;
 	float				_gravity;
 
-	
-	PLAYER_STATE		_playerState;		//쿼트의 상태 enum
-	PLAYER_STATE		_prePlayerState;		//이전의 상태를 저장할 enum 변수
-
-	PLAYER_DIRECTION	_prePlayerDir;		//이전의 방향을 저장할 enum 변수
-	PLAYER_DIRECTION	_playerDir;			//쿼트의 방향
-	JUMP_STATE			_jumpState;			//점프했을 때 상태
 	UINT				_tileX;				//쿼트가 현재 위치하고있는 타일의 번호
 	UINT				_tileY;				//쿼트가 현재 위치하고있는 타일의 번호
-		
+	
+	PLAYER_STATE		_playerState;		//쿼트의 상태 enum
+	//PLAYER_STATE		_prePlayerState;	//이전의 상태를 저장할 enum 변수
+
+	//PLAYER_DIRECTION	_prePlayerDir;		//이전의 방향을 저장할 enum 변수
+	PLAYER_DIRECTION	_playerDir;			//쿼트의 방향
+	JUMP_STATE			_jumpState;			//점프했을 때 상태
+	bool				_haveSignal;		//키가 입력되어있는 상태인지 체크할 불변수
+	
 	//bool				_isLeft;
 	//bool				_isRight;	
 	//bool				_isIdle;
@@ -141,15 +155,15 @@ public:
 	void animationSet();
 	void aniStart(string aniKey);
 
-	void moveLeft();
-	void moveRight();
+	void gravity();
+	void collisionHead();
 	void jump();
 
 
 	void setMapDataMemoryAdressLink(mapData* map) { _map = map; }
 
-	float getPosX() { return _centerX; }
-	float getPosY() { return _centerY; }
+	float getPosX() { return _plLeft; }
+	float getPosY() { return _plTop; }
 
 
 };
